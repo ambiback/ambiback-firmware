@@ -474,7 +474,7 @@ void AmbiWebServer::InitServer() {
   pWebServer->on(PSTR("/"), &handleIndex);
   pWebServer->on(data_index_html_path, &handleIndex);
   pWebServer->on(PSTR("/ui"), HTTP_GET, [] (AsyncWebServerRequest *request){
-    request->redirect(PSTR("https://alorbach.github.io/ambiback-ui/"));
+    request->redirect(PSTR("https://ambiback.github.io/ambiback-ui/"));
   });
   pWebServer->on(PSTR("/reboot"), HTTP_GET, &handleReboot);
   pWebServer->on(PSTR("/startwps"), HTTP_GET, &handleWifiWps);

@@ -188,7 +188,7 @@ web/
 
 - Minimal UI is enabled by `EMBED_MINIMAL_UI` in `globalincludes.h`.
 - The minimal UI is intentionally tiny and pulls Pico.css from cdnjs at runtime.
-- The full UI should live externally (e.g., `https://alorbach.github.io/ambiback-ui/`) and talk to the device API over CORS.
+- The full UI should live externally (e.g., `https://ambiback.github.io/ambiback-ui/`) and talk to the device API over CORS.
 ```
 
 ## Common Tasks
