@@ -9,7 +9,7 @@ Sie ist der Kern des [AmbiBack-Projekts](https://github.com/ambiback). [AmbiBack
 ## Status
 
 - Version im Quellcode: 0.5.231.
-- Acht der 13 Gerätetypen bauen mit dem angepassten ESP32-Core 2.0.0, der für frühere Releases verwendet wurde. Dieser Core ist noch nicht veröffentlicht. `ttgo`, `ttgotm`, `ttgojr`, `wroover` und `ttgopl` bauen noch nicht, und die Kamera-Typen überschreiten mit dem öffentlichen Core 3.3.7 die App-Partition.
+- Acht der 13 Gerätetypen bauen mit dem angepassten ESP32-Core 2.0.0, der für frühere Releases verwendet wurde. Dieser Core ist noch nicht veröffentlicht. `ttgo`, `ttgotm`, `ttgojr`, `wroover` und `ttgopl` bauen noch nicht. Mit dem öffentlichen Core 3.3.7 bauen die Kamera-Typen `m5esp32`, `m5camx` und `m5camtx` nicht, `m5camtx` überschreitet dabei die App-Partition.
 - **Die Firmware wurde seit der Migration nicht auf echter Hardware getestet.**
 - AmbiBack-Geräte werden seit rund fünf Jahren nicht mehr verkauft. Dieses Repository dient dem Eigenbau und der Weiterentwicklung, ohne Produktsupport. Mehr auf [ambiback.de](https://www.ambiback.de/).
 
