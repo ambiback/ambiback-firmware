@@ -38,7 +38,7 @@ These parts match the firmware targets. They have not yet been tested with the c
 - [WAGO 221-415 terminals](https://www.amazon.de/dp/B078XL56P7?tag=ambiback-21)
 - [Seeed Grove cable, 4-pin](https://www.amazon.de/dp/B01CNZ9RJO?tag=ambiback-21)
 
-The full list is on the [AmbiBack parts page](https://www.ambiback.de/en/diy/parts/). PCB and 3D print files are on the [build files page](https://www.ambiback.de/en/diy/3d-print/).
+The full list is on the [AmbiBack parts page](https://www.ambiback.de/en/diy/parts/). The PCB by [Andy Hofmann](https://github.com/ezcGman) is in [ambiback-hardware](https://github.com/ambiback/ambiback-hardware). It uses `G33` for LED data, so `LEDCTRL_PIN` has to be changed from the default 26 (untested). 3D print files are on the [build files page](https://www.ambiback.de/en/diy/3d-print/).
 
 *The Amazon links are affiliate links. As an Amazon Associate I earn from qualifying purchases.*
 

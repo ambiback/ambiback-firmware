@@ -38,7 +38,7 @@ Diese Teile passen zu den Firmware-Zielen. Mit dem aktuellen Firmware-Stand sind
 - [WAGO-Klemmen 221-415](https://www.amazon.de/dp/B078XL56P7?tag=ambiback-21)
 - [Seeed Grove-Kabel, 4-polig](https://www.amazon.de/dp/B01CNZ9RJO?tag=ambiback-21)
 
-Die vollständige Liste steht auf der [AmbiBack-Teileseite](https://www.ambiback.de/selbstbau/teile/). Platine und 3D-Druckdaten gibt es bei den [Baudaten](https://www.ambiback.de/selbstbau/druckdaten/).
+Die vollständige Liste steht auf der [AmbiBack-Teileseite](https://www.ambiback.de/selbstbau/teile/). Die Platine von [Andy Hofmann](https://github.com/ezcGman) liegt in [ambiback-hardware](https://github.com/ambiback/ambiback-hardware). Sie nutzt `G33` für die LED-Daten, `LEDCTRL_PIN` muss daher vom Standard 26 geändert werden (ungetestet). 3D-Druckdaten gibt es bei den [Baudaten](https://www.ambiback.de/selbstbau/druckdaten/).
 
 *Die Amazon-Links sind Partnerlinks. Als Amazon-Partner verdiene ich an qualifizierten Verkäufen.*
 
