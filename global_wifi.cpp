@@ -7,6 +7,18 @@
 #include "esp_wps.h"
 #include <GeneralUtils.h>
 #include "esp_crc.h"
+// NAT and DHCP server headers. NAT is not available in ESP32 2.0.x.
+#if defined(ENABLE_WIFI_NAT) && !(defined(ARDUINO_ESP32_RELEASE_2_0_0) || (defined(ESP_ARDUINO_VERSION_MAJOR) && ESP_ARDUINO_VERSION_MAJOR == 2))
+# include "lwip/lwip_napt.h"
+# include "lwip/ip.h"
+# include "dhcpserver/dhcpserver.h"
+# include "dhcpserver/dhcpserver_options.h"
+# if defined(ESP_ARDUINO_VERSION_MAJOR) && ESP_ARDUINO_VERSION_MAJOR >= 3
+#   include "esp_netif.h"
+# else
+#   include "tcpip_adapter.h"
+# endif
+#endif
 void global::HandleWifiMode(void) {
   wifi_mode_t wifiMode = (global::GetWifiAPEnable() ? WIFI_MODE_APSTA : WIFI_MODE_STA);
   
@@ -837,8 +849,12 @@ void global::SetDeviceAPpass(char* pszNew, bool bEpprom) {
     memcpy(global::m_wifi_ap_password, pszNew, strLen);
     global::m_wifi_ap_password[strLen] = '\0';
   } else {
+# if defined(ENABLE_WIFI_AP)
     global::BuildGeneratedApPasswordFromMac(global::GetDeviceIDMac(), global::m_wifi_ap_password, WLAN_KEY_MAX);
     bEpprom = true; // SAVE!
+# else
+    global::m_wifi_ap_password[0] = '\0'; // Devices without AP have no generated password
+# endif
   }
   _DBGPRINTF(PSTR("global:SetDeviceAPpass=%s/%s(%d)\n"), pszNew, global::m_wifi_ap_password, strLen);
 
@@ -875,6 +891,7 @@ void global::SetRestoreLastLedMode(byte bNew, bool bEpprom) {
   }
 }
 
+# if defined(ENABLE_WIFI_AP)
 void global::SetWifiProvisioningEnabled(byte bNew, bool bEpprom) {
   bool bWasEnabled = global::m_bWifiProvisioningEnabled;
   global::m_bWifiProvisioningEnabled = (bNew == 0 ? false : true);
@@ -910,6 +927,7 @@ void global::SetWifiProvisioningTimeoutMinutes(byte bNew, bool bEpprom) {
     }
   }
 }
+# endif
 
 void global::SetDeviceName(char* pszNew, bool bEpprom) {
   size_t strLen = strlen(pszNew);

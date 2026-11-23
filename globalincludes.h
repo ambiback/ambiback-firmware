@@ -210,14 +210,14 @@ WTFNESS NOT TESTED
 # define DEBUGLEVEL_INFO     32
 # define DEBUGLEVEL_WARN     16
 # define DEBUGLEVEL_ERROR    8
-# define _ERRPRINTF(...) { global::errprintf_P(__VA_ARGS__); }
+# define _ERRPRINTF(...) do { global::errprintf_P(__VA_ARGS__); } while (0)
 # if defined(ENABLE_NORMAL_DEBUG) 
-#   define _DBGPRINTF(...) if(global::GetDebugEnabled()) { global::dbgprintf_P(__VA_ARGS__); }
+#   define _DBGPRINTF(...) do { if(global::GetDebugEnabled()) { global::dbgprintf_P(__VA_ARGS__); } } while (0)
 # else
 #   define _DBGPRINTF(...) ((void)0)  // Compile-time elimination
 # endif
 # if defined(ENABLE_ULTRA_DEBUG) 
-#   define _DBGPRINTF_ULTRA(...) if(global::GetDebugEnabled() && global::GetUltraDebugEnabled()) { global::dbgprintf_P(__VA_ARGS__); }
+#   define _DBGPRINTF_ULTRA(...) do { if(global::GetDebugEnabled() && global::GetUltraDebugEnabled()) { global::dbgprintf_P(__VA_ARGS__); } } while (0)
 # else
 #   define _DBGPRINTF_ULTRA(...) ((void)0)  // Compile-time elimination
 # endif
