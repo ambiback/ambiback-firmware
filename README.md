@@ -1,46 +1,62 @@
 # AmbiBack Firmware
 
-ESP32-Firmware für AmbiBack: Sie steuert LED-Streifen passend zum Bildschirminhalt und verbindet DreamScreen, Philips Hue, Kamera und Netzwerk-Clients.
+**English** · [Deutsch](README.de.md)
 
-Die AmbiBack-Geräte werden seit rund fünf Jahren nicht mehr verkauft. Dieses Repository stellt den Quellcode für den Eigenbau und die Weiterentwicklung bereit. Mehr zum Projekt steht auf [ambiback.de](https://www.ambiback.de/).
+ESP32 firmware for AmbiBack. It drives LED strips to match the screen content and connects DreamScreen, Philips Hue, a camera and network clients.
 
-## Betriebsarten
+It is the core of the [AmbiBack project](https://github.com/ambiback). [AmbiBack UI](https://github.com/ambiback/ambiback-ui) and [AmbiBack Manager](https://github.com/ambiback/ambiback-manager) configure and control the device, and [AmbiBack PC](https://github.com/ambiback/ambiback-pc) can send it color data.
 
-- **VIDEO:** empfängt Farbdaten per UDP oder TCP von externen Anwendungen.
-- **CAM:** ermittelt die Farben mit der Kamera des Moduls.
-- **AMBIENT:** zeigt statische Farben und Szenen.
-- **RELAY:** leitet LED-Daten an andere AmbiBack-Geräte weiter.
-- **DEMO:** dient zum Testen.
+## Status
 
-## Unterstützte Geräte
+- Version in the source: 0.5.231.
+- **The firmware has not been compiled since the migration changes and has not been tested on real hardware.** Treat the build steps below as untested.
+- AmbiBack devices have not been on sale for around five years. This repository is for DIY use and further development, with no product support. More at [ambiback.de](https://www.ambiback.de/).
 
-Das Zielgerät wird in `globalincludes.h` über `ESP32_DEVICE_TYPE` gewählt. Pro Build ist genau ein Typ aktiv:
+## Operating modes
+
+- **VIDEO:** receives color data over UDP or TCP from external applications.
+- **CAM:** determines colors using the module's camera.
+- **AMBIENT:** shows static colors and scenes.
+- **RELAY:** forwards LED data to other AmbiBack devices.
+- **DEMO:** for testing.
+
+## Supported device types
+
+The target is selected through `ESP32_DEVICE_TYPE` in `globalincludes.h`. Exactly one type is active per build:
 
 `ESP32_BRIDGE`, `ESP32_NAKED`, `ESP32_WROOVER_CAM`, `ESP32_TTGO_CAM`, `ESP32_TTGO_CAM_MIC`, `ESP32_TTGO_CAM_JOURNAL`, `ESP32_TTGO_CAM_PLUS`, `ESP32_M5ST_CAM`, `ESP32_M5ST_CAM_X`, `ESP32_M5ST_ATOMLITE`, `ESP32_M5ST_ATOMMATRIX`, `ESP32_AMBIBACK_LEDV1`, `ESP32_M5ST_CAM_TIMER_X`
 
-## Bauen
+## Building
 
-Voraussetzungen sind die Arduino IDE oder `arduino-cli` mit ESP32-Board-Unterstützung sowie Node.js und Python für die Web-Oberfläche. Als externe Bibliotheken werden unter anderem AsyncTCP, ESPAsyncWebServer, FastLED und IRremoteESP8266 verwendet.
+You need the Arduino IDE or `arduino-cli` with ESP32 board support, plus Node.js and Python for the web interface. External libraries include AsyncTCP, ESPAsyncWebServer, FastLED and IRremoteESP8266.
 
-1. Abhängigkeiten der Web-Oberfläche in `web/` installieren: `npm install`
-2. Die eingebetteten Web-Header erzeugen: `./build-web.sh` (Windows: `build-web.bat`)
-3. In `globalincludes.h` das Zielgerät wählen.
-4. Die Firmware `AmbiBack.Controller.ino` kompilieren und flashen.
+1. Install the web dependencies in `web/`: `npm install`
+2. Generate the embedded web headers: `bash build-web.sh` (Windows: `build-web.bat`)
+3. Select the target device in `globalincludes.h`.
+4. Compile and flash `AmbiBack.Controller.ino`.
 
-`ambiwebserver_html_raw.h` und `ambiwebserver_html_raw_min.h` werden erzeugt und nicht eingecheckt.
+`ambiwebserver_html_raw.h` and `ambiwebserver_html_raw_min.h` are generated and not checked in.
 
-### Eigene Build-Einstellungen
+### Build settings
 
-Diese Werte lassen sich als Compiler-Flag überschreiben:
+These values can be overridden as compiler flags:
 
-- `AMBIBACK_FIRMWARE_BASE_URL`: Basisadresse für Firmware-Updates. Standard ist `http://firmware.ambiback.com/firmware/esp32`, der Gerätepfad wird automatisch angehängt.
-- `AMBIBACK_SYSLOG_SERVER`: IP-Adresse des Syslog-Servers. Standardmäßig ist keine eingetragen, der Wert lässt sich auch im Gerät setzen.
-- `AMBIBACK_AP_PASSWORD_SEED`: 32-Bit-Startwert für das erzeugte Access-Point-Passwort, definiert in `globalincludes.h`. Der Standard `0x0000FFFF` hält das Passwort bestehender Geräte unverändert. Für eigene Builds einen eigenen Wert setzen, nicht einchecken und im AmbiBack Manager denselben Wert verwenden. Der Wert ist kein vollwertiger Schutz: Wer ein einziges Passwort eines Builds kennt, kann die übrigen berechnen. Setze daher zusätzlich ein eigenes AP-Passwort.
+- `AMBIBACK_FIRMWARE_BASE_URL`: base address for firmware updates. The device path is appended automatically. The availability of the default server is not guaranteed, so set your own address for your own builds.
+- `AMBIBACK_SYSLOG_SERVER`: IP address of the syslog server. Empty by default, and it can also be set on the device.
+- `AMBIBACK_AP_PASSWORD_SEED`: 32-bit seed for the generated access point password, defined in `globalincludes.h`. The default `0x0000FFFF` keeps the password of existing devices. For your own builds, set your own value, do not commit it, and use the same value in AmbiBack Manager.
 
-## Lizenz
+## Security
+
+The generated access point password is derived from the device's MAC address. A custom seed is not full protection: anyone who knows one password from a build can calculate the others. The device web interface and API have no login. Set your own access point password and run devices only on a trusted network.
+
+## Trademarks
+
+Philips Hue and DreamScreen are trademarks of their respective owners. This project is not affiliated with them.
+
+## License
 
 Copyright (C) 2020-2026 Andre Lorbach
 
-Dieses Programm ist freie Software und steht unter der [GNU General Public License Version 3](LICENSE). Es wird ohne jede Gewährleistung bereitgestellt.
+This program is free software under the [GNU General Public License version 3](LICENSE). It comes with no warranty.
 
-Enthaltener Drittcode behält seine eigene Lizenz, siehe [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Included third-party code keeps its own license, see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
