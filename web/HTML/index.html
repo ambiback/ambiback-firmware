@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html>
+<head> 
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>%DT%</title>
+
+	<!-- manifest, icon etc -->
+	<link rel="manifest" href="ambiback.webmanifest.json">
+	<link rel="icon" type="image/png" sizes="192x192" href="images/app_logo.png">
+	<link rel="shortcut icon" href="images/app_logo.png" sizes="192x192">
+	<link rel="apple-touch-icon" href="images/app_logo.png" />
+	
+	<!-- Style sheets -->
+	<link rel="stylesheet" href="jquery_mobile_min.css">
+	<link rel="stylesheet" href="include_ambiback_styles.css">
+	<!-- Jquery Scripts -->
+	<script src="jquery_min.js"></script>
+	<script src="jquery_mobile_min.js"></script>
+	<!-- Ambiback Scripts -->
+	<script src="include_ambiback_script.js"></script>
+</head>
+<body class="ui-mobile-viewport ui-overlay-b">
+<div data-role="page" id="mainpage" class="ui-page-theme-b">
+	<div data-role="header">
+		<a id="btn_status" href="#status_popupMenu" data-rel="popup" data-transition="slideup" class="ui-btn ui-corner-all ui-shadow ui-btn-icon-left ui-icon-power">Status</a>
+		<div data-role="popup" id="status_popupMenu" data-theme="b">
+			<ul data-role="listview" data-inset="true" class="pLV">
+				<li id="status_connections" data-role="list-divider">Connections</li>
+				<li id="status_wifi" data-role="list-divider">Wifi:</li>
+				<li id="status_wifisignal" data-role="list-divider">Signal:</li>
+				<li id="status_video" class="bR">Network Input</li>
+				<li id="status_dreamScreen" class="bR">DreamScreen</li>
+				<li id="status_hue" class="bR">Hue Stream</li>
+				<li id="status_fps" data-role="list-divider">LED Fps/NetPkt:</li>
+				<li id="status_sys" data-role="list-divider">Free Mem/Heap/PSRAM:</li>
+				<li id="status_cam" data-role="list-divider">CAM Fps/Black:</li>
+				<li id="status_cam_xtr" data-role="list-divider">-</li>
+				<li data-role="list-divider">Actions</li>
+				<li><a id="btn_refresh" href="#" data-icon="refresh">Refresh Interface</a></li>
+			</ul>
+		</div>
+		<h1>%DT% %V%</h1>
+		<a id="btn_system" href="#system_popupMenu" data-rel="popup" data-transition="slideup" class="ui-btn ui-corner-all ui-shadow ui-btn-icon-left ui-icon-gear">System</a>
+		<div data-role="popup" id="system_popupMenu" data-theme="b">
+			<ul data-role="listview" data-inset="true" class="pLV">
+				<li><a id="btn_button" href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-icon-left ui-icon-home">Add AmbiBack to Homescreen</a></li>
+				<li data-role="list-divider">Choose an action</li>
+				<li><a id="btn_system_reboot" href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-icon-left ui-icon-refresh">Reboot</a></li>
+				<li data-role="list-divider">Advanced Options</li>
+				<li><a id="btn_system_debug" href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-icon-left ui-icon-check">Enable Remote Debug</a></li>
+				<li><a id="btn_system_debug_ultra" href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-icon-left ui-icon-check">Enable Ultra Debug</a></li>
+				<li id="system_debug_toggle"><a id="btn_system_debug_options" href="#" class="ui-btn ui-corner-all ui-shadow ui-btn-icon-left ui-icon-check">Show advanced Debug options</a></li>
+			</ul>
+		</div>
+	</div><!-- /header -->
+	<div class="ui-content mC" id="maincontent" role="main">
+		<!-- Tabs -->
+		<div id="tabs" data-role="tabs" class="ui-body ui-body-b ui-corner-all">
+			<div id="tabs-navbar" data-role="navbar" data-grid="b" data-maxbutton="3" data-iconpos="left">
+			<ul>
+				<li><a id="link_system" href="#tabs-system" class="ui-btn-active lS" data-icon="home">System &amp; Version</a></li>
+				<li><a id="link_color" href="#tabs-color" class="lbl-color" data-icon="star">Color &amp; Motion</a></li>
+				<li><a id="link_Setup" href="#tabs-setup" class="lSet" data-icon="grid">LED Setup</a></li>
+				<li><a id="link_camera" href="include_camera.html" class="lCam" data-icon="video">CAM Setup</a></li>
+				<li><a id="link_hue" href="include_hue.html" class="lH" data-icon="eye">Smart Lighting (Hue & Others)</a></li>
+				<li><a id="link_ambient" href="include_ambient.html" class="lbl-ambient" data-icon="camera">Ambient Mode</a></li>
+				<li><a id="link_dreamscreen" href="include_dreamscreen.html" class="lDS" data-icon="gear">DreamScreen Support</a></li>
+			</ul>
+			</div>
+
+			<!-- System & Version -->
+			<div id="tabs-system">
+				<div id="system_controller" class="ui-body">
+					<h3 class="ui-bar ui-bar-b ui-corner-all lS">Controller Mode</h3>
+					<div id="navbar_mode" data-role="navbar">
+						<div id="mode-control" data-role="controlgroup" data-type="horizontal" class="uC">
+							<a id="mode-off" href="#">Off</a>
+							<a id="mode-demo" href="#">Demo</a>
+							<a id="mode-video" href="#">Video</a>
+							<a id="mode-cam" href="#">Camera</a>
+							<a id="mode-relay" href="#">Relay</a>
+						</div>
+					</div>
+					<div id="system_cam">
+						<h3 class="ui-bar ui-bar-b ui-corner-all lCam">Camera Settings</h3>
+						<div class="ui-grid-solo">
+							<div class="ui-block-a">
+								<label for="camera_autoonoff">Camera Automatic stop</label>
+								<input type="checkbox" %camera_autoonoff% name="camera_autoonoff" id="camera_autoonoff">
+							</div>
+							<div class="ui-block-a">
+								<label for="camera_autoonoffdelay" class="uLI">Delay in seconds before camera is turned off</label>
+								<input type="time" data-clear-btn="false" name="camera_autoonoffdelay" id="camera_autoonoffdelay" value="00:15">
+							</div>
+						</div>
+					</div>
+				</div>
+			
+				<div id="system_device" class="ui-body">
+					<h3 class="ui-bar ui-bar-b ui-corner-all lS">Device & Network Settings</h3>
+					<div id="system_relay">
+						<div class="ui-grid-solo">
+							<div class="ui-block-a">
+								<label for="system_relayto">LED Processing on:</label>
+								<select name="system_relayto" id="system_relayto">
+								</select>
+							</div>
+							<div class="ui-block-a">
+								<label for="system_relay_mode">Protocol:</label>
+								<select name="system_relay_mode" id="system_relay_mode">
+								</select>
+							</div>
+							<div class="ui-block-a">
+								<label for="system_relayto_direct">Fast relay mode</label>
+								<input type="checkbox" %system_relayto_direct% name="system_relayto_direct" id="system_relayto_direct">
+							</div>
+							<div class="ui-block-a">
+								<label for="system_relay_wifidirect">Use WIFI Direct mode</label>
+								<input type="checkbox" %system_relay_wifidirect% name="system_relay_wifidirect" id="system_relay_wifidirect">
+							</div>
+						</div>
+					</div>
+					<div class="ui-field-contain">
+						<label for="system_devicename" class="uLI">Device Name:</label>
+						<input type="text" name="system_devicename" id="system_devicename" value="%DN%" title="Name your Ambiback Controller">
+					</div>
+					<div class="ui-field-contain">
+						<label for="system_buttonfunc"><b class="gBL">Green Button</b> Function (Short press 0-1,5 sec):</label>
+						<select name="system_buttonfunc" id="system_buttonfunc">
+						</select>
+					</div>
+					<div class="ui-field-contain">
+						<label for="system_wififail">Handling on WIFI Fail:</label>
+						<select name="system_wififail" id="system_wififail">
+						</select>
+					</div>
+					<div class="ui-field-contain">
+						<label for="system_restore_last_led_mode">Restore last LED mode after reboot</label>
+						<input type="checkbox" %system_restore_last_led_mode% name="system_restore_last_led_mode" id="system_restore_last_led_mode">
+					</div>
+					<div id="system_wifi_ap">
+						<div class="ui-grid-solo">
+							<div class="ui-block-a">
+								<label for="system_wifi_ap_enable">Enable WIFI Direct Access Point</label>
+								<input type="checkbox" %system_wifi_ap_enable% name="system_wifi_ap_enable" id="system_wifi_ap_enable">
+							</div>
+							<div class="ui-block-a">
+								<label for="system_wifi_direct_ssid">WIFI Direct SSID:</label>
+								<input type="text" name="system_wifi_direct_ssid" id="system_wifi_direct_ssid" readonly value="%system_wifi_direct_ssid%" disabled>
+							</div>
+							<div class="ui-block-a">
+								<label for="system_wifi_direct_pass">WIFI Direct Password:</label>
+								<input type="password" name="system_wifi_direct_pass" id="system_wifi_direct_pass" readonly value="%system_wifi_direct_pass%" disabled>
+							</div>
+							<div class="ui-block-a">
+								<label for="system_provisioning_enable">Enable Boot Provisioning Window</label>
+								<input type="checkbox" %system_provisioning_enable% name="system_provisioning_enable" id="system_provisioning_enable">
+							</div>
+							<div class="ui-block-a">
+								<label for="system_provisioning_timeout">Provisioning Timeout (minutes):</label>
+								<select name="system_provisioning_timeout" id="system_provisioning_timeout">
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			
+				<div id="system_info" class="ui-body">
+					<h3 class="ui-bar ui-bar-b ui-corner-all lS">System Information</h3>
+
+					<div class="ui-field-contain">
+						<label for="system_version" class="uLI">Firmware Version:</label>
+						<input type="text" name="system_version" id="system_version" readonly value="%V%" disabled>
+						<label for="system_id">Device ID:</label>
+						<input type="text" name="system_id" id="system_id" readonly value="%DID%" disabled>
+						<label for="system_mac">Device MAC:</label>
+						<input type="text" name="system_mac" id="system_mac" readonly value="%DMAC%" disabled>
+					</div>
+				</div>
+
+				<div id="system_firmware" class="ui-body">
+					<h3 class="ui-bar ui-bar-b ui-corner-all lS">Firmware Update</h3>
+
+					<div id="tabs_firmware" data-role="tabs" class="ui-body ui-body-b ui-corner-all tabs-firmware">
+						<div data-role="navbar" data-grid="b">
+						<ul>
+							<li><a id="link_firmware_auto" href="#tabs-firmware-auto" class="ui-btn-active">Automatic Update</a></li>
+							<li><a id="link_firmware_manual" href="#tabs-firmware-manual">Manual Update</a></li>
+						</ul>
+						</div>
+
+						<div id="tabs-firmware-auto">
+							<div class="ui-field-contain">
+								<div id="firmware_info" class="fI"></div>
+								<label for="firmware_version">Firmware Version</label>
+								<select name="firmware_version" id="firmware_version">
+								</select>
+							</div>
+							<div class="ui-field-contain">
+								<fieldset data-role="controlgroup" data-type="horizontal">
+									<legend>Actions: </legend>
+									<button id="firmware_update" class="ui-disabled">Update</button>
+									<button data-icon="search" id="firmware_check">Check for Update</button>
+								</fieldset>
+							</div>
+						</div>
+						
+						<div id="tabs-firmware-manual">
+							<form method='POST' action="/update" enctype="multipart/form-data" id="upload_form" data-a="0">
+							<div class="ui-field-contain">
+								<fieldset data-role="controlgroup" data-type="horizontal">
+									<legend>Choose Firmware Imagefile:</legend>
+									<input type="file" name="update" id="system_firmware_update" title="...Choose Firmware file...">
+									<input type="submit" value="Manual update" id="button_submit" data-inline="true" data-icon="carat-r" data-iconpos="right">
+								</fieldset>
+							</div>
+							<div class="ui-field-contain">
+								<div id='prg'></div><br/>
+								<div id='prgbar'>
+									<div id='bar'></div>
+								</div><br/>
+							</div>
+							</form>							
+						</div>
+					</div>
+				</div>
+				
+				<div id="system_debugging" class="ui-body">
+					<div class="ui-field-contain">
+						<label for="debug_syslogserver">Syslog Server:</label>
+						<input type="text" name="debug_syslogserver" id="debug_syslogserver" value="%SS%" title="Syslogserver for debugging">
+					</div>
+					<div class="ui-field-contain">
+						<label for="debug_syslogport">Syslog Port:</label>
+						<input type="text" name="debug_syslogport" id="debug_syslogport" value="%SP%" title="Port for Syslogserver debugging">
+					</div>
+					<div class="ui-field-contain">
+						<label for="debug_enableserial">Enable/Disable Serial debugging</label>
+						<input type="checkbox" %DSE% name="debug_enableserial" id="debug_enableserial">
+						<label for="debug_enablesyslog">Enable/Disable Syslog debugging</label>
+						<input type="checkbox" %DSYE% name="debug_enablesyslog" id="debug_enablesyslog">
+						<label for="debug_enableultra">Enable/Disable ultra verbose debug output</label>
+						<input type="checkbox" %DUE% name="debug_enableultra" id="debug_enableultra">
+					</div>
+					<div class="ui-field-contain">
+						<fieldset data-role="controlgroup" data-type="horizontal">
+							<legend>Actions: </legend>
+							<button id="btn_system_startwps" data-icon="cloud">Start WPS Mode</button>
+						</fieldset>
+					</div>
+				</div>
+				
+			</div>
+
+			<!-- LED Setup -->
+			<div id="tabs-setup">
+				<div id="ui_setup_ledcount" class="ui-body">
+					<h3 class="ui-bar ui-bar-b ui-corner-all lSet">LED Count</h3>
+					<div class="ui-field-contain">
+						<label for="slider_setupVertical">Vertical LED Count:</label>
+						<input type="range" name="slider_setupVertical" id="slider_setupVertical" value="20" min="8" max="60" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+					<div class="ui-field-contain">
+						<label for="slider_setupHorizontal">Horizontal LED Count:</label>
+						<input type="range" name="slider_setupHorizontal" id="slider_setupHorizontal" value="40" min="8" max="120" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+					<h3 class="ui-bar ui-bar-b ui-corner-all  lSet">TV Sides</h3>
+				</div>
+				<div id="ui_setup_tvsides" class="ui-body uFW">
+					<div id="setupTvBoxSettings" class="ui-grid-b ui-responsive sTBS">
+						<div class="ui-block-a sTSB"></div>
+						<div class="ui-block-b sTCB">
+
+							<div class="uFCN ui-field-contain">
+								<label for="setup_SideTop" class="ui-icon-arrow-d">Top</label>
+								<input type="checkbox" %SST% name="setup_SideTop" id="setup_SideTop">
+								<input class="ui-hidden-accessible" type="range" name="setup_SideTopBrightness" id="setup_SideTopBrightness" value="100" min="1" max="100" data-highlight="true" data-popup-enabled="true" data-mini="true">
+							</div>
+						</div>
+						<div class="ui-block-c sTSB"></div>
+					
+						<div class="ui-block-a sTSB">
+							<div class="uFCN ui-field-contain">
+								<label for="setup_SideLeft" class="ui-icon-arrow-r ui-btn-icon-bottom">Left</label>
+								<input type="checkbox" %SSL% name="setup_SideLeft" id="setup_SideLeft" data-mini="true" data-iconpos="bottom">
+								<input class="ui-hidden-accessible" type="range" name="setup_SideLeftBrightness" id="setup_SideLeftBrightness" value="100" min="1" max="100" data-highlight="true" data-popup-enabled="true" data-mini="true">
+							</div>
+						</div>
+						<div class="ui-block-b sTCB">
+							<div id="setupTvBox" class="ui-block-b ui-corner-all ui-shadow box-tv sTBO">								
+								<div id="setupTvBox" class="ui-block-b ui-corner-all bC setup-tv-box-inner"></div>
+							</div>
+						</div>
+						<div class="ui-block-c sTSB">
+							<div class="uFCN ui-field-contain">
+								<label for="setup_SideRight" class="ui-icon-arrow-l">Right</label>
+								<input type="checkbox" %SSR% name="setup_SideRight" id="setup_SideRight" data-mini="true" data-iconpos="bottom">
+								<input class="ui-hidden-accessible" type="range" name="setup_SideRightBrightness" id="setup_SideRightBrightness" value="100" min="1" max="100" data-highlight="true" data-popup-enabled="true" data-mini="true">
+							</div>
+						</div>
+						
+						<div class="ui-block-a sTSB"></div>
+						<div class="ui-block-b sTCB">
+							<div class="uFCN ui-field-contain">
+								<input class="ui-hidden-accessible" type="range" name="setup_SideBottomBrightness" id="setup_SideBottomBrightness" value="100" min="1" max="100" data-highlight="true" data-popup-enabled="true" data-mini="true">
+								<label for="setup_SideBottom" class="ui-icon-arrow-u">Bottom</label>
+								<input type="checkbox" %SSB% name="setup_SideBottom" id="setup_SideBottom">
+							</div>
+						</div>
+						<div class="ui-block-c sTSB"></div>
+					</div>
+				</div>
+				<div id="ui_setup_leddirection" class="ui-body">
+					<h3 class="ui-bar ui-bar-b ui-corner-all lSet">LED Direction</h3>
+					<div class="ui-field-contain">
+						<fieldset data-role="controlgroup">
+							<legend>Choose Setup:</legend>
+							<input type="radio" name="radio_setupDirection" id="radio_setupDirection1" value="1">
+							<label for="radio_setupDirection1"><div class="box aBRC"><center>&#x21ba;</center></div>Start bottom right counter clockwise.</label>
+							<input type="radio" name="radio_setupDirection" id="radio_setupDirection2" value="2">
+							<label for="radio_setupDirection2"><div class="box aTRC"><center>&#x21ba;</center></div>Start top right counter clockwise.</label>
+							<input type="radio" name="radio_setupDirection" id="radio_setupDirection3" value="3">
+							<label for="radio_setupDirection3"><div class="box aTL-cclock"><center>&#x21ba;</center></div>Start top left counter clockwise.</label>
+							<input type="radio" name="radio_setupDirection" id="radio_setupDirection4" value="4">
+							<label for="radio_setupDirection4"><div class="box aBLC"><center>&#x21ba;</center></div>Start bottom left counter clockwise.</label>
+							<input type="radio" name="radio_setupDirection" id="radio_setupDirection5" value="5">
+							<label for="radio_setupDirection5"><div class="box arrow-top-right"><center>&#x21bb;</center></div>Start top right clockwise.</label>
+							<input type="radio" name="radio_setupDirection" id="radio_setupDirection6" value="6">
+							<label for="radio_setupDirection6"><div class="box aTL"><center>&#x21bb;</center></div>Start top left clockwise.</label>
+							<input type="radio" name="radio_setupDirection" id="radio_setupDirection7" value="7">
+							<label for="radio_setupDirection7"><div class="box aBL"><center>&#x21bb;</center></div>Start bottom left clockwise.</label>
+							<input type="radio" name="radio_setupDirection" id="radio_setupDirection8" value="8">
+							<label for="radio_setupDirection8"><div class="box aBR"><center>&#x21bb;</center></div>Start bottom right clockwise.</label>
+						</fieldset>
+					</div>
+				</div>
+				
+				<div id="ui_color_saturation" class="ui-body">
+					<h3 class="ui-bar ui-bar-b ui-corner-all lSet">LED Color Calibration</h3>
+					<div class="ui-field-contain">
+						<label for="slider_colorRed">Red:</label>
+						<input type="range" name="slider_colorRed" id="slider_colorRed" value="255" min="1" max="255" data-highlight="true" data-popup-enabled="true" data-show-value="true" style="background:#FF0000" data-theme="b">
+					</div>
+					<div class="ui-field-contain">
+						<label for="slider_colorGreen">Green:</label>
+						<input type="range" name="slider_colorGreen" id="slider_colorGreen" value="255" min="1" max="255" data-highlight="true" data-popup-enabled="true" data-show-value="true" style="background:#00A000" data-theme="b">
+					</div>
+					<div class="ui-field-contain">
+						<label for="slider_colorBlue">Blue:</label>
+						<input type="range" name="slider_colorBlue" id="slider_colorBlue" value="255" min="1" max="255" data-highlight="true" data-popup-enabled="true" data-show-value="true" style="background:#0000FF" data-theme="b">
+					</div>
+				</div>
+				
+			</div>
+
+			<!-- Color Settings -->
+			<div id="tabs-color">
+				<div id="ui_color_presets" class="ui-body">
+					<h3 class="ui-bar ui-bar-b ui-corner-all lbl-color">Color Enhancement</h3>
+					<div class="ui-field-contain">
+						<label for="color_Presets">Color Enhancement Preset:</label>
+						<select name="color_Presets" id="color_Presets">
+						</select>
+					</div>
+					<div class="ui-field-contain">
+						<label for="slider_colorBoostBalance">Color Boost Balance</label>
+						<input type="range" name="slider_colorBoostBalance" id="slider_colorBoostBalance" value="0" min="0" max="100" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+					<div id="color_enhancement_custom">
+						<div class="ui-grid-solo">
+							<div class="ui-block-a">
+								<label for="slider_colorBoost">Color Boost:</label>
+								<input type="range" name="slider_colorBoost" id="slider_colorBoost" value="0" min="0" max="100" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+							</div>
+							<div class="ui-block-a">
+								<label for="slider_colorBoostMin">Color Boost Smoothing</label>
+								<input type="range" name="slider_colorBoostMin" id="slider_colorBoostMin" value="0" min="0" max="100" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+							</div>
+							<div class="ui-block-a">
+								<label for="slider_colorBoostThreshold">Color Boost Threshold</label>
+								<input type="range" name="slider_colorBoostThreshold" id="slider_colorBoostThreshold" value="0" min="0" max="255" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+							</div>
+							<div class="ui-block-a">
+								<label for="slider_colorBoostRed">Red Boost Level:</label>
+								<input type="range" name="slider_colorBoostRed" id="slider_colorBoostRed" value="100" min="5" max="100" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true" style="background:#FF0000" data-theme="b">
+							</div>
+							<div class="ui-block-a">
+								<label for="slider_colorBoostGreen">Green Boost Level:</label>
+								<input type="range" name="slider_colorBoostGreen" id="slider_colorBoostGreen" value="100" min="5" max="100" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true" style="background:#00A000" data-theme="b">
+							</div>
+								<label for="slider_colorBoostBlue">Blue Boost Level:</label>
+								<input type="range" name="slider_colorBoostBlue" id="slider_colorBoostBlue" value="100" min="5" max="100" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true" style="background:#0000FF" data-theme="b">
+							<div class="ui-block-a">
+							</div>
+						</div>
+					</div>
+					<div class="ui-field-contain">
+						<label for="brightness_Presets">Brightness:</label>
+						<select name="brightness_Presets" id="brightness_Presets">
+						</select>
+					</div>
+					<div id="brightness_enhancement_custom">
+						<div class="ui-field-contain">
+							<label for="slider_colorValueGain">Value Gain:</label>
+							<input type="range" name="slider_colorValueGain" id="slider_colorValueGain" value="100" min="100" max="500" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+						</div>
+						<div class="ui-field-contain">
+							<label for="slider_colorMaxBrightness">Max Brightness:</label>
+							<input type="range" name="slider_colorMaxBrightness" id="slider_colorMaxBrightness" value="255" min="5" max="255" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+						</div>
+					</div>
+					<div class="ui-field-contain">
+						<label for="slider_colorMinimumLuminosity">Minimum Luminosity:</label>
+						<input type="range" name="slider_colorMinimumLuminosity" id="slider_colorMinimumLuminosity" value="0" min="0" max="255" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+				</div>
+				
+				<div id="ui_motion_settings" class="ui-body">
+					<h3 class="ui-bar ui-bar-b ui-corner-all lbl-color">Motion Settings</h3>
+					<div class="ui-field-contain">
+						<label for="motion_Presets">Motion handling:</label>
+						<select name="motion_Presets" id="motion_Presets">
+						</select>
+					</div>
+					
+					<div id="motion_enhancement_custom">
+						<div id="ui_motion_frame" class="ui-body">
+							<h3 class="ui-bar ui-bar-b ui-corner-all">Frame Smoothing</h3>
+							<div class="ui-field-contain">
+								<label for="slider_setupFramesmoothing">Frame Smoothing:</label>
+								<input type="range" name="slider_setupFramesmoothing" id="slider_setupFramesmoothing" value="%DFS%" step="1" min="0" max="%DFM%" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+							</div>
+						</div>
+						<div id="ui_motion_video" class="ui-body">
+							<h3 class="ui-bar ui-bar-b ui-corner-all">Video (network input) Settings</h3>
+							<div class="ui-field-contain" id="ui_setupFrameLength">
+								<label for="slider_setupFrameLength">LED Framelength (ms):</label>
+								<input type="range" name="slider_setupFrameLength" id="slider_setupFrameLength" value="20" step="5" min="%DFL%" max="100" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+							</div>
+							<div class="ui-field-contain" id="ui_setupFramedelay">
+								<label for="slider_setupFramedelay">LED Frame Delay (ms):</label>
+								<input type="range" name="slider_setupFramedelay" id="slider_setupFramedelay" value="60" step="5" min="%DFL%" max="1000" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+							</div>
+						</div>
+					</div>
+				
+			</div>
+		</div>
+
+		<div id="ui-body-footer" class="ui-body ui-body-b" data-role="footer"> 
+			<div class="ui-grid-a">
+				<div class="ui-block-a"><b>IP:</b></div>
+				<div class="ui-block-b">%IP%</div>
+				<div class="ui-block-a"><b>DeviceID:</b></div>
+				<div class="ui-block-b">%DID%</div>
+				<div class="ui-block-a"><b>Camera:</b></div>
+				<div class="ui-block-b">%CS%</div>
+				<div class="ui-block-a"><b>Startup:</b></div>
+				<div class="ui-block-b">%MILLIS%</div>
+			</div>
+			<div class="ui-widget" id="resultwidget">
+				<div class="ui-state-highlight ui-corner-all result-widget">
+					<span class="ui-icon ui-icon-info rI"></span>
+					Debug<div id="result" ></div>
+				</div>
+			</div>
+		</div>
+
+		<div data-role="popup" id="popupAmbient" data-overlay-theme="a" data-theme="b" class="ui-corner-all pA">
+		</div>
+		
+		<div data-role="popup" id="popupMessage" data-overlay-theme="a" data-theme="b" class="ui-corner-all ui-overlay-shadow bXP" shadow="true">
+			<a href="#" data-rel="back" data-role="button" data-theme="b" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+			<div id="popupMessageLabel" class="ui-bar ui-bar-b bR">Error</div>
+			<div id="popupMessageText" class="bXP"></div>
+		</div>
+	</div>
+</div>
+
+<!-- Init UI Controls -->
+<script>
+// Enable TAB Caching!
+$("#tabs").tabs({ cache:true });
+$("#tabs").tabs({
+	beforeActivate: function(event, ui) {
+		window.bTabLoading = true;
+		console.log( "beforeActivate: " +  ui.newTab.context.id);
+
+		// Show loading Window ...
+		sL("Loading Tab ... please wait");
+	},
+	activate: function( event, ui ) {
+		console.log( "activate: " +  ui.newTab.context.id);
+		// Hide loading Window if already loaded
+		if (window.tabsHelperVars !== 'undefined' && 
+			window.tabsHelperVars[ui.newTab.context.id] !== 'undefined' && 
+			window.tabsHelperVars[ui.newTab.context.id] == true) {
+			hL();
+		}
+	},
+	beforeLoad: function(event, ui) {
+//		console.log( "beforeLoad: " + ui.tab.context.id);
+		// if the target panel is empty, return true
+		return ui.panel.html() == "";
+	},
+	load: function( event, ui ) {
+//		console.log( "load: " + ui.tab.context.id);
+	},
+});
+
+// Static variables
+window.dID = '%DID%';
+window.hIP = '%HIP%';
+window.szHueBridgeUser = '%HUSR%';
+window.hAppID = window.dID + "#AmbiBack";
+window.hueVars = [];
+window.tabsHelperVars  = [];
+window.tabsHelperVars['link_system'] = true;
+window.tabsHelperVars['link_color'] = true;
+window.tabsHelperVars['link_Setup'] = true;
+// Alias for backward compatibility with include files
+window.tVars = window.tabsHelperVars;
+
+// Set to true for debugging
+window.Debug = false;
+
+// Other helper variables
+window.bMHS = false;
+
+// Enums
+var i=1;
+var ecp = {
+	normal: i++,
+	colorful: i++,
+	extracolorful: i++,
+	extremecolorful: i++,
+	custom: 999,
+}
+i=1;
+var ebp = {
+	low: i++,
+	medium: i++,
+	normal: i++,
+	high: i++,
+	extrahigh: i++,
+	extremehigh: i++,
+	custom: 999,
+}
+i=1;
+var emp = {
+	direct: i++,
+	normal: i++,
+	smooth: i++,
+	extrasmooth: i++,
+	extremesmooth: i++,
+	custom: 999,
+}
+i=1;
+var relaymodes = {
+	udp: i++,
+	tcp: i++,
+	bt: i++,
+}
+
+// Bind basic events
+$(window).on('touchstart', function(e) {
+    if ($(e.target).closest('#mobileMenuHeader').length == 1){
+        window.bMHS = true;
+    }
+});
+$(window).on('touchend', function() {
+    window.bMHS = false;
+});
+$(window).on('touchmove', function(e) {
+//    if (window.bMHS) {
+//        e.preventDefault();
+//    }
+});
+
+
+// Init Jquery Mobile after doc load
+$(document).on( "pagecreate", function( event ) {
+	// Init Buttons
+	$('#btn_refresh').on('click', function (e) {
+		timedRefresh();
+	});
+	$('#btn_system_reboot').on('click', function (e) {
+		$( "#result" ).load( "reboot?forreal=1", hCR );
+		sL('Rebooting ... please wait');
+		timedRefresh(5000);
+	});
+
+	$('#btn_system_startwps').on('click', function (e) {
+		$( "#result" ).load( "startwps?forreal=1", hCR );
+		sL('Starting WPS Mode ... Please wait, this can take a while ...');
+		timedRefresh(5000);
+	});
+
+	$('#btn_system_debug').on('click', function (e) {
+		if ( $('#btn_system_debug').text() == "Enable Remote Debug") {
+			$( "#result" ).load( "http://debug.ambiback.com/getip.php", hDRS );
+		} else {
+			$('#btn_system_debug').removeClass("ui-icon-forbidden");
+			$('#btn_system_debug').addClass("ui-icon-check");
+			$('#btn_system_debug').text("Enable Remote Debug"); 
+			$('#btn_system_debug').removeClass("bG");
+		
+			$( "#result" ).load( "setparam?param=setdebugsyslog&value=0", hCR );
+			if ( $('#btn_system_debug_ultra').text() == "Disable Ultra Debug") {
+				$( "#btn_system_debug_ultra" ).trigger('click');
+			}
+		}
+	});
+	
+	$('#btn_system_debug_ultra').on('click', function (e) {
+		if ( $('#btn_system_debug_ultra').text() == "Enable Ultra Debug") {
+		
+			alert("Attention! ULTRA Debug will decrease device performance and can even cause the controller to hangup. If the device does not response anymore, disconnect it from power and connect it again."); 
+		
+			$( "#result" ).load( "setparam?param=setdebugultra&value=1", hCR );
+		
+			$('#btn_system_debug_ultra').addClass("ui-icon-forbidden");
+			$('#btn_system_debug_ultra').removeClass("ui-icon-check");
+			$('#btn_system_debug_ultra').text("Disable Ultra Debug"); 
+			$('#btn_system_debug_ultra').addClass("bG");
+		} else {
+			$( "#result" ).load( "setparam?param=setdebugultra&value=0", hCR );
+			
+			$('#btn_system_debug_ultra').removeClass("ui-icon-forbidden");
+			$('#btn_system_debug_ultra').addClass("ui-icon-check");
+			$('#btn_system_debug_ultra').text("Enable Ultra Debug"); 
+			$('#btn_system_debug_ultra').removeClass("bG");
+		}
+	});
+	
+	$('#btn_system_debug_options').on('click', function (e) {
+		if ( $('#btn_system_debug_options').text() == "Show advanced Debug options") {
+			$("#system_debugging").show();
+			window.ab.d = true;
+		
+			$('#btn_system_debug_options').addClass("ui-icon-forbidden");
+			$('#btn_system_debug_options').removeClass("ui-icon-check");
+			$('#btn_system_debug_options').text("Hide advanced Debug options"); 
+			$('#btn_system_debug_options').addClass("bG");
+		} else {
+			$("#system_debugging").hide();
+			window.ab.d = false;
+			
+			$('#btn_system_debug_options').removeClass("ui-icon-forbidden");
+			$('#btn_system_debug_options').addClass("ui-icon-check");
+			$('#btn_system_debug_options').text("Show advanced Debug options"); 
+			$('#btn_system_debug_options').removeClass("bG");
+		}
+	});	
+
+	$('#status_popupMenu').on('popupbeforeposition', function (event, ui) {
+		// Set Status Check to true
+		window.sC = true;
+		window.sCsecs = 0; 
+		$( "#result" ).load( "getstatusasjson", hSUR );
+	}); 	
+	$('#status_popupMenu').on('popupafterclose', function (event, ui) {
+		// Set Status Check to false
+		window.sC = false;	
+		$('#status_connections').text("Connections"); 
+	}); 	
+	
+	// Navbar Handling
+	// $("#mode-video").addClass('ui-disabled');
+	
+//	$("#mode-off").click();
+//	$("#mode-off").prop("checked", true).checkboxradio("refresh");
+	$("#mode-off").addClass('ui-btn-active');
+	$("#mode-off").on('click', function(){
+		$( "#result" ).load( "setcolormode?mode=0" + $(this).val(), hCR );
+	});
+	$("#mode-cam").on('click', function(){
+		$( "#result" ).load( "setcolormode?mode=3" + $(this).val(), hCR );
+	});
+	$("#mode-demo").on('click', function(){
+		$( "#result" ).load( "setcolormode?mode=5" + $(this).val(), hCR );
+	});
+
+	var modebuttons = $("#mode-control").find("d"); 
+	for(var i = 0; i < modebuttons.length; i++) {
+		console.log(modebuttons[i].id);
+		$("#" + modebuttons[i].id ).addClass('ui-btn-active');
+	}
+
+	// --- LED Setup Controls
+	$( "#slider_setupVertical" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setvertical&value=" + $(this).val(), hCR );
+	});
+	
+	$( "#slider_setupHorizontal" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=sethorizontal&value=" + $(this).val(), hCR );
+	});
+	$(":input[name= 'radio_setupDirection']").on('change', function(){
+		$( "#result" ).load( "setparam?param=setdirection&value=" + $(this).val(), hCR );
+	});
+	$( "#setup_SideTop" ).on( "change", function( event, ui ) {
+		var ischecked = ($(this).prop("checked") ? 1 : 0); 
+		$( "#result" ).load( "setparam?param=setsidetop&value=" + ischecked, hCR );
+	});
+	$( "#setup_SideLeft" ).on( "change", function( event, ui ) {
+		var ischecked = ($(this).prop("checked") ? 1 : 0); 
+		$( "#result" ).load( "setparam?param=setsideleft&value=" + ischecked, hCR );
+	});
+	$( "#setup_SideRight" ).on( "change", function( event, ui ) {
+		var ischecked = ($(this).prop("checked") ? 1 : 0); 
+		$( "#result" ).load( "setparam?param=setsideright&value=" + ischecked, hCR );
+	});
+	$( "#setup_SideBottom" ).on( "change", function( event, ui ) {
+		var ischecked = ($(this).prop("checked") ? 1 : 0); 
+		$( "#result" ).load( "setparam?param=setsidebottom&value=" + ischecked, hCR );
+	});
+	$( "#setup_SideTopBrightness" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=settopbrightness&value=" + $(this).val(), hCR );
+	});
+	$( "#setup_SideLeftBrightness" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setleftbrightness&value=" + $(this).val(), hCR );
+	});
+	$( "#setup_SideRightBrightness" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setrightbrightness&value=" + $(this).val(), hCR );
+	});
+	$( "#setup_SideBottomBrightness" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setbottombrightness&value=" + $(this).val(), hCR );
+	});
+	
+	
+	$( "#slider_setupFrameLength" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setframelength&value=" + $(this).val(), hCR );
+	});
+	$( "#slider_setupFramedelay" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setframedelay&value=" + $(this).val(), hCR );
+	});
+	$( "#slider_setupFramesmoothing" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setframesmoothing&value=" + $(this).val(), hCR );
+	});
+	
+	// Color Calibration 
+	$( "#slider_colorRed" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setcolorred&value=" + $(this).val(), hCR );
+	});
+	$( "#slider_colorGreen" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setcolorgreen&value=" + $(this).val(), hCR );
+	});
+	$( "#slider_colorBlue" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setcolorblue&value=" + $(this).val(), hCR );
+	});
+	$( "#slider_colorBoost" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setcolorboost&value=" + $(this).val(), hCR );
+	});
+	$( "#slider_colorBoostBalance" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setcolorboostbalance&value=" + $(this).val(), hCR );
+	});
+	$( "#slider_colorBoostMin" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setcolorboostmin&value=" + $(this).val(), hCR );
+	});
+	$( "#slider_colorBoostRed" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setcolorboostred&value=" + $(this).val(), hCR );
+	});
+	$( "#slider_colorBoostGreen" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setcolorboostgreen&value=" + $(this).val(), hCR );
+	});
+	$( "#slider_colorBoostBlue" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setcolorboostblue&value=" + $(this).val(), hCR );
+	});
+	$( "#slider_colorBoostThreshold" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setcolorboostthreshold&value=" + $(this).val(), hCR );
+	});
+	
+	$( "#slider_colorValueGain" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setcolorvaluegain&value=" + $(this).val(), hCR );
+	});
+	$( "#slider_colorMaxBrightness" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setbrightness&value=" + $(this).val(), hCR );
+	});
+	$( "#slider_colorMinimumLuminosity" ).on( "slidestop", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setminimumluminosity&value=" + $(this).val(), hCR );
+	});
+	
+	// Init ColorPresets
+	$("#color_Presets").append(new Option("--select--", "select"));
+	$("#color_Presets").val("select");
+	$("#color_Presets").selectmenu("refresh");
+	$("#color_Presets").append(new Option("Normal", ecp.normal));
+	$("#color_Presets").append(new Option("Colorful", ecp.colorful));
+	$("#color_Presets").append(new Option("Extra Colorful", ecp.extracolorful));
+	$("#color_Presets").append(new Option("Extreme Colorful", ecp.extremecolorful));
+	$("#color_Presets").append(new Option("Custom Settings", ecp.custom));
+	$("#color_Presets").on( "change", function( event, ui ) {
+		console.log($(this).val());
+
+		// Store preset number
+		$( "#result" ).load( "setpreset?param=setcolorpreset&value=" + $(this).val(), hCRPreset );
+
+		/// Show hide custom settings
+		if ($(this).val() == ecp.custom) {
+			// Custom Mode, show Settings
+			$("#color_enhancement_custom").show();
+		} else {
+			// Hide Custom properties
+			$("#color_enhancement_custom").hide();
+		}
+	});
+
+	// Init BrightnessPresets
+	$("#brightness_Presets").append(new Option("--select--", "select"));
+	$("#brightness_Presets").val("select");
+	$("#brightness_Presets").selectmenu("refresh");
+	$("#brightness_Presets").append(new Option("Low", ebp.low));
+	$("#brightness_Presets").append(new Option("Medium", ebp.medium));
+	$("#brightness_Presets").append(new Option("Normal", ebp.normal));
+	$("#brightness_Presets").append(new Option("High", ebp.high));
+	$("#brightness_Presets").append(new Option("Extra High", ebp.extrahigh));
+	$("#brightness_Presets").append(new Option("Extreme High", ebp.extremehigh));
+	$("#brightness_Presets").append(new Option("Custom Settings", ebp.custom));
+	$("#brightness_Presets").on( "change", function( event, ui ) {
+		console.log($(this).val());
+
+		// Store preset number
+		$( "#result" ).load( "setpreset?param=setbrightnesspreset&value=" + $(this).val(), hCRPreset );
+
+		/// Show hide custom settings
+		if ($(this).val() == ebp.custom) {
+			// Custom Mode, show Settings
+			$("#brightness_enhancement_custom").show();
+		} else {
+			// Hide Custom properties
+			$("#brightness_enhancement_custom").hide();
+		}
+	});
+
+	// Init BrightnessPresets
+	$("#motion_Presets").append(new Option("--select--", "select"));
+	$("#motion_Presets").val("select");
+	$("#motion_Presets").selectmenu("refresh");
+	$("#motion_Presets").append(new Option("Direct", emp.direct));
+	$("#motion_Presets").append(new Option("Normal", emp.normal));
+	$("#motion_Presets").append(new Option("Smooth", emp.smooth));
+	$("#motion_Presets").append(new Option("Extra Smooth", emp.extrasmooth));
+	$("#motion_Presets").append(new Option("Extreme Smooth", emp.extremesmooth));
+	$("#motion_Presets").append(new Option("Custom Settings", emp.custom));
+	$("#motion_Presets").on( "change", function( event, ui ) {
+		console.log($(this).val());
+
+		// Store preset number
+		$( "#result" ).load( "setpreset?param=setmotionpreset&value=" + $(this).val(), hCRPreset );
+
+		/// Show hide custom settings
+		if ($(this).val() == emp.custom) {
+			// Custom Mode, show Settings
+			$("#motion_enhancement_custom").show();
+		} else {
+			// Hide Custom properties
+			$("#motion_enhancement_custom").hide();
+		}
+	});
+	// --- 
+
+	// --- Cam Settings
+	$( "#camera_autoonoff" ).on( "change", function( event, ui ) {
+		var ischecked = ($(this).prop("checked") ? 1 : 0); 
+		$( "#result" ).load( "setparam?param=setcamautoonoff&value=" + ischecked, hCR );
+	});
+	$( "#camera_autoonoffdelay" ).on( "change", function( event, ui ) {
+		var values = $(this).val().split(":")
+		var timevalue = Number(values[0]) * 60 + Number(values[1]);
+		console.log(values[0] + " + " + values[1] + " + " + timevalue );
+		$( "#result" ).load( "setparam?param=setcamautoonoffdelay&value=" + timevalue, hCR );
+	});
+	// --- 
+
+	// --- System Settings
+	$( "#system_devicename" ).on( "change", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setdevicename&value=" + encodeURI($(this).val()), hCR );
+	});
+	
+	// Debug Settings
+	$( "#debug_syslogserver" ).on( "change", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setdebugsyslogserver&value=" + encodeURI($(this).val()), hCR );
+	});
+	$( "#debug_syslogport" ).on( "change", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setdebugsyslogport&value=" + $(this).val(), hCR );
+	});
+
+	$( "#debug_enableserial" ).on( "change", function( event, ui ) {
+		var ischecked = ($(this).prop("checked") ? 1 : 0); 
+		$( "#result" ).load( "setparam?param=setdebugserial&value=" + ischecked, hCR );
+	});
+	$( "#debug_enablesyslog" ).on( "change", function( event, ui ) {
+		var ischecked = ($(this).prop("checked") ? 1 : 0); 
+		$( "#result" ).load( "setparam?param=setdebugsyslog&value=" + ischecked, hCR );
+	});
+	$( "#debug_enableultra" ).on( "change", function( event, ui ) {
+		var ischecked = ($(this).prop("checked") ? 1 : 0); 
+		$( "#result" ).load( "setparam?param=setdebugultra&value=" + ischecked, hCR );
+	});
+
+	// Button Function
+	$("#system_buttonfunc").empty(); 
+	$("#system_buttonfunc").append(new Option("Disabled", 0));
+	$("#system_buttonfunc").append(new Option("Toggle Mode OFF", 1));
+	$("#system_buttonfunc").append(new Option("Toggle Mode OFF/Camera", 2));
+	$("#system_buttonfunc").append(new Option("Toggle Camera Colormode", 3));
+	$("#system_buttonfunc").append(new Option("Toggle Camera Colorpreset", 4));
+	$("#system_buttonfunc").append(new Option("Toggle Hue Support ON/OFF", 5));
+	$("#system_buttonfunc").append(new Option("Toggle DreamScreen Support ON/OFF", 6));
+	$("#system_buttonfunc").val(0).selectmenu("refresh");
+	
+	$("#system_buttonfunc").on( "change", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setbuttonmode&value=" + $(this).val(), hCR );
+	});
+	
+	$("#system_wififail").empty(); 
+	$("#system_wififail").append(new Option("Reconnect", 0));
+	$("#system_wififail").append(new Option("Reconnect/Reboot", 1));
+	$("#system_wififail").append(new Option("Reboot", 2));
+	$("#system_wififail").val(0).selectmenu("refresh");
+	
+	$("#system_wififail").on( "change", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setwififail&value=" + $(this).val(), hCR );
+	});
+
+	// Clear Firmware Versions
+	$("#firmware_version").empty(); 
+
+	$("#firmware_version").on( "change", function( event, ui ) {
+		$('#firmware_update').removeClass("ui-disabled");
+		$('#firmware_update').addClass("bR");
+	});
+	
+	// Init AmbiBack Devices from Window variables
+	iAD(); 	
+
+	$("#system_relayto").on( "change", function( event, ui ) {
+		var szRelay = $(this).val();
+		handleRelayToChanged(szRelay);
+	
+		$( "#result" ).load( "setparam?param=setrelaytarget&value=" + $(this).val(), hCR );
+	});
+	$( "#system_relayto_direct" ).on( "change", function( event, ui ) {
+		var ischecked = ($(this).prop("checked") ? 1 : 0);
+		$( "#result" ).load( "setparam?param=setrelaytodirect&value=" + ischecked, hCR );
+		// Handle relay as well!
+		var szRelay = $("#system_relayto").val();
+		handleRelayToChanged(szRelay);
+	});
+	
+	$( "#system_relay_wifidirect" ).on( "change", function( event, ui ) {
+		var ischecked = ($(this).prop("checked") ? 1 : 0);
+		$( "#result" ).load( "setparam?param=setrelaywifidirect&value=" + ischecked, hCR );
+		// TODO Handle WIFI SWITCH
+	});
+	
+	$( "#system_wifi_ap_enable" ).on( "change", function( event, ui ) {
+		var ischecked = ($(this).prop("checked") ? 1 : 0);
+		$( "#result" ).load( "setparam?param=setwifiapenable&value=" + ischecked, hCR );
+	});
+
+	$( "#system_restore_last_led_mode" ).on( "change", function( event, ui ) {
+		var ischecked = ($(this).prop("checked") ? 1 : 0);
+		$( "#result" ).load( "setparam?param=setrestorelastledmode&value=" + ischecked, hCR );
+	});
+
+	$( "#system_provisioning_enable" ).on( "change", function( event, ui ) {
+		var ischecked = ($(this).prop("checked") ? 1 : 0);
+		$( "#result" ).load( "setparam?param=setprovisioningenable&value=" + ischecked, hCR );
+	});
+
+	$("#system_provisioning_timeout").empty();
+	for (var provMin = 1; provMin <= 60; provMin++) {
+		$("#system_provisioning_timeout").append(new Option(provMin + " min", provMin));
+	}
+	$("#system_provisioning_timeout").val("%system_provisioning_timeout%").selectmenu("refresh");
+
+	$("#system_provisioning_timeout").on( "change", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setprovisioningtimeout&value=" + $(this).val(), hCR );
+	});
+	
+	
+	// other
+	$("#system_relay_mode").empty(); 
+	$("#system_relay_mode").append(new Option("UDP", relaymodes.udp));
+	$("#system_relay_mode").append(new Option("TCP", relaymodes.tcp));
+	// NOT YET IMPLEMENTED $("#system_relay_mode").append(new Option("Bluetooth", relaymodes.bt));
+	$("#system_relay_mode").val(relaymodes.udp).selectmenu("refresh");
+	
+	$("#system_relay_mode").on( "change", function( event, ui ) {
+		$( "#result" ).load( "setparam?param=setrelaymode&value=" + $(this).val(), hCR );
+		if ($(this).val() == relaymodes.bt) {
+			var szLoading = "Enabling Bluetooth ... please wait."; 
+			sL(szLoading);
+			timedRefresh(5000);
+		}
+	});
+	
+	// Upload function
+	$('#upload_form').submit(function(e){
+		e.preventDefault();
+		window.ab.updatestarted = new Date();
+		var form = $("#upload_form")[0];
+		var data = new FormData(form);
+		$.ajax({
+			url: "/update",
+			type: "POST",
+			data: data,
+			contentType: false,
+			processData:false,
+			xhr: function() {
+				var xhr = new window.XMLHttpRequest();
+				xhr.upload.addEventListener("progress", function(evt) {
+					if (evt.lengthComputable) {
+						var per = evt.loaded / evt.total;
+						$("#prg").html("progress: " + Math.round(per*100) + "%%");
+						$("#prgbar").css("width",Math.round(per*100) + "%%");
+					}
+				}, false);
+				return xhr;
+			},
+			success:function(d, s) {
+				console.log("success!");
+				timedRefresh(1000); 
+			},
+			error: function (a, b, c) {
+				$("#firmware_info").html("Updated failed!");
+			}
+		});
+	});
+	
+	// Auto Update Controls
+//	$("#slider_firmware").parent().find('input').hide(); 
+//	$("#slider_firmware").parent().find('.ui-slider-handle').hide();
+//	$("#slider_firmware").parent().find('.ui-slider-track').css('margin','0 15px 0 15px');
+	
+	$('#firmware_check').on('click', function (e) {
+		cFU(); 
+	});
+	
+	$('#firmware_update').on('click', function (e) {
+		window.ab.updatestarted = new Date();
+
+		var szLoading = "Firmware Update started ... please wait."; 
+		$( "#firmware_info" ).html(szLoading);
+		sL(szLoading);
+		
+		// finally load now!
+		console.log("Load Firmware Build: " + $('#firmware_version').val() );
+		$( "#result" ).load( "autoupdate?version=" + $('#firmware_version').val(), hFUR );
+	});
+	 
+	// Handle External Popups
+	$( "#popupAmbient" ).on( "popupafteropen", function(){
+		// Load Popup Code
+		$(this).load( "include_ambient.html", hCR );
+	});
+	
+	// Triggered by controller !
+	cFU(); 
+	
+	// Hide Debug field
+	if (!window.Debug) {
+		$("#resultwidget").hide();
+		$("#system_debugging").hide();
+	}
+	
+	// Hide Custom properties
+	$("#color_enhancement_custom").hide();
+	$("#brightness_enhancement_custom").hide();
+	$("#motion_enhancement_custom").hide();
+
+	
+	// Fix Sliders Scrolling issue
+	fSN(); 
+});
+
+function hFUR(responseTxt, statusTxt, xhr){
+	if (statusTxt == "success") {
+		// Get response 
+		var responseAsObject = $.parseJSON(responseTxt);
+		console.log('DATA: ' + JSON.stringify(responseAsObject));
+
+		if (responseAsObject.status == 1) {
+			// get update status
+			var dateNow = new Date();
+			$( "#result" ).load( "updatestatus?" + dateNow.getTime(), hFUS );
+		} else {
+			hL();
+			if (responseAsObject.error.length > 0) {
+				$("#firmware_info").html("Firmware update error: " + responseAsObject.error);
+			} else {
+				$("#firmware_info").html("Firmware update error");
+			}
+		}
+	}
+	if (statusTxt == "error") {
+		hL();
+		$(this).html("Error: " + xhr.status + ": " + xhr.statusText);
+	}
+};
+
+function hFUS(responseTxt, statusTxt, xhr){
+	if (statusTxt == "success") {
+		// Get response 
+		var responseAsObject = $.parseJSON(responseTxt);
+		console.log('DATA: ' + JSON.stringify(responseAsObject));
+		
+		if (responseAsObject.status == 1) {
+		
+			setTimeout(function() {
+				// get update status
+				var dateNow = new Date();
+				var szLoading = "Firmware Update started ... please wait " + Math.round(((dateNow - window.ab.updatestarted) / 1000));
+				sL(szLoading);
+				$( "#result" ).load( "updatestatus?" + dateNow.getTime(), hFUS );
+			}, 500);
+			/*	
+			sleep(500).then(() => {
+				// get update status
+				var dateNow = new Date();
+				var szLoading = "Firmware Update started ... please wait " + Math.round(((dateNow - window.ab.updatestarted) / 1000)); 
+				$.mobile.loading( 'show', { text: szLoading, textVisible: true, theme: 'b'});
+				$( "#result" ).load( "updatestatus?" + dateNow.getTime(), hFUS );
+			});
+			*/
+		} else {
+			var szResult = "Firmware update successfull, rebooting ... "; 
+			if (responseAsObject.error.length > 0) {
+				hL();
+				$("#firmware_info").html("Firmware update error: " + responseAsObject.error);
+			} else {
+				sL(szResult);
+				$("#firmware_info").html(szResult);
+			}
+			timedRefresh(1000); 
+		}
+	}
+	if (statusTxt == "error") {
+		hL();
+		$("#firmware_info").html("Error: " + xhr.status + ": " + xhr.statusText);
+		timedRefresh(1000); 
+	}
+};
+
+
+// Add to Home Button Code
+if ('serviceWorker' in navigator) {
+  console.log("Try to register service worker ... ");
+  navigator.serviceWorker.register('include_ambiback_worker.js').then(function(reg){
+	console.log("SUCCESS");
+  }).catch(function(err) {
+	console.log("FAIL: ", err)
+  });
+}
+
+// Code to handle install prompt on desktop
+let deferredPrompt;
+const addBtn = document.getElementById('btn_button');
+addBtn.style.display = 'none';
+
+/*
+	// System & Version
+	var button_submit = $( "#button_submit" ).button();
+*/
+</script>
+<!--[if !IE]> -->
+<script>
+window.addEventListener('beforeinstallprompt', (e) => {
+console.log('beforeinstallprompt');
+  // Prevent Chrome 67 and earlier from automatically showing the prompt
+  e.preventDefault();
+  // Stash the event so it can be triggered later.
+  deferredPrompt = e;
+  // Update UI to notify the user they can add to home screen
+  addBtn.style.display = 'block';
+
+  addBtn.addEventListener('click', (e) => {
+	// hide our user interface that shows our A2HS button
+	addBtn.style.display = 'none';
+	// Show the prompt
+	deferredPrompt.prompt();
+	// Wait for the user to respond to the prompt
+	deferredPrompt.userChoice.then((choiceResult) => {
+		if (choiceResult.outcome === 'accepted') {
+		  console.log('User accepted the A2HS prompt');
+		} else {
+		  console.log('User dismissed the A2HS prompt');
+		}
+		deferredPrompt = null;
+	  });
+  });
+});
+console.log("addEventListener beforeinstallprompt added"); 
+</script>
+<!-- <![endif]-->
+
+<!-- Include Setting defaults from controller -->
+<script src="controllersettings.js"></script>
+
+</body>
+</html>

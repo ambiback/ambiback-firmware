@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>%DT% %V%</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/picocss/2.0.6/pico.min.css">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>%DT% <small>%V%</small></h1>
+      <p>Minimal local UI. Full UI: <a href="https://alorbach.github.io/ambiback-ui/" target="_blank" rel="noopener">Open AmbiBack UI</a></p>
+    </header>
+    <section>
+      <h2>Status</h2>
+      <pre id="status">Loading...</pre>
+      <button id="refresh" type="button">Refresh Status</button>
+    </section>
+    <section>
+      <h2>Quick Actions</h2>
+      <div class="grid">
+        <a role="button" href="/startwps?forreal=1">Start WPS</a>
+        <a role="button" href="/reboot?forreal=1" class="secondary">Reboot</a>
+        <a role="button" href="/update" class="contrast">OTA Update</a>
+      </div>
+    </section>
+    <section>
+      <h2>LED Mode</h2>
+      <div id="mode-buttons" class="grid">
+        <span id="mode-loading">Loading...</span>
+      </div>
+      <small id="mode-result"></small>
+    </section>
+    <section>
+      <h2>API Links</h2>
+      <ul>
+        <li><a href="/getstatusasjson">/getstatusasjson</a></li>
+        <li><a href="/getscannetworksasjson">/getscannetworksasjson</a></li>
+        <li><a href="/getparamatersasjson">/getparamatersasjson</a></li>
+      </ul>
+    </section>
+  </main>
+  <script>
+    (function () {
+      var statusEl = document.getElementById("status");
+      var refreshBtn = document.getElementById("refresh");
+      var modeResult = document.getElementById("mode-result");
+      var modeButtonsEl = document.getElementById("mode-buttons");
+      var modeLoadingEl = document.getElementById("mode-loading");
+
+      var allModes = [
+        { value: 0, label: "Off" },
+        { value: 1, label: "Video" },
+        { value: 2, label: "Ambient" },
+        { value: 3, label: "Camera" },
+        { value: 4, label: "Relay" },
+        { value: 5, label: "Demo" },
+      ];
+
+      function hasParam(params, key) {
+        return params && (params.hasOwnProperty(key) || params[key] !== undefined);
+      }
+
+      function readString(params, key, def) {
+        if (!params || params[key] === undefined) return def;
+        return String(params[key]);
+      }
+
+      function getAvailableModes(params) {
+        if (!params) return allModes;
+        var capsCamera = hasParam(params, "camresolution") || hasParam(params, "cammode");
+        var deviceType = readString(params, "devicetype", "").toLowerCase();
+        var isBridge = deviceType.indexOf("bridge") !== -1;
+
+        return allModes.filter(function (mode) {
+          if (mode.value === 1 && capsCamera) return false; /* Video not on Cam modules */
+          if (mode.value === 2 && (capsCamera || isBridge)) return false; /* Ambient not on CAM/bridge */
+          if (mode.value === 3 && !capsCamera) return false;
+          if (mode.value === 4) return false; /* Relay hidden, same as web UI */
+          return true;
+        });
+      }
+
+      function renderModeButtons(params) {
+        var modes = getAvailableModes(params);
+        modeLoadingEl.remove();
+        modeButtonsEl.innerHTML = "";
+        modes.forEach(function (m) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.setAttribute("data-mode", m.value);
+          btn.textContent = m.label;
+          btn.addEventListener("click", function () {
+            var mode = btn.getAttribute("data-mode");
+            fetch("/setcolormode?mode=" + encodeURIComponent(mode))
+              .then(function (resp) {
+                if (!resp.ok) throw new Error("HTTP " + resp.status);
+                return resp.text();
+              })
+              .then(function (text) {
+                modeResult.textContent = "Mode updated: " + text;
+                loadParams();
+              })
+              .catch(function (err) {
+                modeResult.textContent = "Mode error: " + err.message;
+              });
+          });
+          modeButtonsEl.appendChild(btn);
+        });
+      }
+
+      function loadStatus() {
+        fetch("/getstatusasjson")
+          .then(function (resp) {
+            if (!resp.ok) throw new Error("HTTP " + resp.status);
+            return resp.json();
+          })
+          .then(function (data) {
+            statusEl.textContent = JSON.stringify(data, null, 2);
+          })
+          .catch(function (err) {
+            statusEl.textContent = "Status error: " + err.message;
+          });
+      }
+
+      function loadParams() {
+        fetch("/getparamatersasjson")
+          .then(function (resp) {
+            if (!resp.ok) throw new Error("HTTP " + resp.status);
+            return resp.json();
+          })
+          .then(function (data) {
+            renderModeButtons(data);
+          })
+          .catch(function (err) {
+            modeButtonsEl.innerHTML = '<span style="color:var(--pico-del-color,#c00)">Error: ' + err.message + "</span>";
+          });
+      }
+
+      refreshBtn.addEventListener("click", function () {
+        loadStatus();
+        loadParams();
+      });
+
+      loadStatus();
+      loadParams();
+    })();
+  </script>
+</body>
+</html>

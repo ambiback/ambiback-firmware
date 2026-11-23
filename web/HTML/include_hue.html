@@ -1,0 +1,70 @@
+<!-- Include Hue Script from controller -->
+<script src="include_jshue.js"></script>
+<script src="include_ambiback_script_hue.js"></script>
+
+<div id="tabs-hue">
+	<div id="ui_form_hue" class="ui-body">
+		<h3 class="ui-bar ui-bar-b ui-corner-all lH">Hue Bridge Support</h3>
+		<div class="ui-grid-solo">
+			<div class="ui-block-a" name="div_smart_hue_support" id="div_smart_hue_support">
+				<label for="smart_hue_support">Activate Philips Hue Streaming</label>
+				<input type="checkbox" %hue_enabled% name="smart_hue_support" id="smart_hue_support">
+			</div>
+			<div class="ui-block-a">
+				<label for="smart_Huebridge">Hue Bridge IP:</label>
+				<input type="text" name="smart_Huebridge" id="smart_Huebridge" value="">
+			</div>
+			<div class="ui-block-a">
+				<fieldset data-role="controlgroup" data-type="horizontal">
+					<legend>Actions: </legend>
+					<button id="smart_ConnectHueBridge">Connect</button>
+					<button id="smart_DisconnectHueBridge">Disconnect</button>
+					<button data-icon="search" id="smart_RefreshHueDevices">Scan</button>
+				</fieldset>
+				<div id="smart_hue_connectinfo">
+					<p>Make sure to hit the Push-link button on your Hue Bridge before you try to connect to your bridge.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="hue_options" class="ui-body">
+		<h3 class="ui-bar ui-bar-b ui-corner-all lH">Hue Bridge Options</h3>
+		<div class="ui-grid-solo">
+			<div class="ui-block-a">
+				<label for="hue_Presets">Hue Performance:</label>
+				<select name="hue_Presets" id="hue_Presets">
+				</select>
+			</div>
+			<div id="hue_enhancement_custom">
+				<div class="ui-block-a">
+					<label for="slider_smart_FrameLength">Framelength (ms):</label>
+					<input type="range" name="slider_smart_FrameLength" id="slider_smart_FrameLength" value="40" step="5" min="20" max="100" data-h="1" data-popup-enabled="true" data-sv="1">
+				</div>
+				<div class="ui-block-a">
+					<label for="slider_smart_HandshakeTimeout">DTLS Handshake Timeout (s):</label>
+					<input type="range" name="slider_smart_HandshakeTimeout" id="slider_smart_HandshakeTimeout" value="10" step="1" min="5" max="60" data-h="1" data-popup-enabled="true" data-sv="1">
+				</div>
+			</div>
+		</div>
+	</div>
+			
+	<div id="ui_form_hue_devices" class="ui-body">
+		<h3 class="ui-bar ui-bar-b ui-corner-all lH">Hue Devices</h3>
+		<div class="ui-grid-solo">
+			<div class="ui-block-a">
+				<div data-role="collapsible-set" data-ct="b" id="smart_HueLights">
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<script>
+// Tab needs to be created after page load here!
+initHueTab(); 
+</script>
+
+<!-- Include Hue Setting defaults from controller -->
+<script src="controllersettings_hue.js"></script>

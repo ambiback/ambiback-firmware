@@ -1,0 +1,7 @@
+# Generated web UI headers (build from web/ via convert.sh)
+ambiwebserver_html_raw.h
+ambiwebserver_html_raw_min.h
+
+# Local build and tool files
+node_modules/
+scripts/decode_backtrace.conf

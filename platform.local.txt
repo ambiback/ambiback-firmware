@@ -1,0 +1,34 @@
+## Compiler optimization flags for code size reduction
+## ================================================
+## DEPLOYMENT: Copy this file to your ESP32 board package folder:
+##
+##   Arduino IDE (Windows):
+##   C:\Users\<YourUsername>\AppData\Local\Arduino15\packages\esp32\hardware\esp32\<version>\
+##
+##   Arduino IDE (macOS):
+##   ~/Library/Arduino15/packages/esp32/hardware/esp32/<version>/
+##
+##   Arduino IDE (Linux):
+##   ~/.arduino15/packages/esp32/hardware/esp32/<version>/
+##
+##   To find <version>: Arduino IDE → File → Preferences → Show verbose output
+##   Then compile and look for: "Using board 'esp32' from platform in folder: ..."
+##
+##   File must be named exactly: platform.local.txt (same folder as platform.txt)
+##   Restart Arduino IDE after copying.
+## ================================================
+
+compiler.c.extra_flags=-ffunction-sections -fdata-sections
+compiler.cpp.extra_flags=-ffunction-sections -fdata-sections
+compiler.c.elf.extra_flags=-Wl,--gc-sections
+
+## What these flags do:
+## -ffunction-sections -fdata-sections: Place each function/data in separate sections (enables dead code removal)
+## -Wl,--gc-sections: Linker garbage collection - removes unused sections from final binary
+## Note: -Os is already set by platform.txt (compiler.optimization_flags)
+## Estimated savings: 5-15 KB (depends on codebase)
+
+## Optional: Add -flto for Link Time Optimization (more savings, slower compile, may break some libs):
+# compiler.c.extra_flags=-ffunction-sections -fdata-sections -flto
+# compiler.cpp.extra_flags=-ffunction-sections -fdata-sections -flto
+# compiler.c.elf.extra_flags=-Wl,--gc-sections -flto

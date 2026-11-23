@@ -1,0 +1,467 @@
+<!-- AmbiBack Camera Scripts -->
+<!-- Needed for camera control -->
+<script src="jquery_ui_draggable.js"></script>			
+<!-- needed for mobile touch -->
+<script src="jquery_ui_touch_punch_min.js"></script>	
+
+<!-- Include Camera Script from controller -->
+<script src="include_ambiback_script_camera.js"></script>
+
+<div id="tabs-camera">
+
+	<div id="cam_main_options" class="ui-body">
+		<div data-role="collapsible" data-collapsed="false" data-collapsed-icon="bullets"> 
+			<h3 class="ui-bar ui-bar-b ui-corner-all lCam-primary">Ambient Experience Options</h3>
+		
+			<h3 class="ui-bar ui-bar-b ui-corner-all lCam">General Camera Options:</h3>
+			<div class="ui-grid-a">
+				<div class="ui-block-a">
+					<label for="camera_HMirror">Mirror &#8596;</label>
+					<input type="checkbox" %camera_hmirror% name="camera_HMirror" id="camera_HMirror">
+				</div>
+				<div class="ui-block-b">
+					<label for="camera_VFlip">Flip &#8597;</label>
+					<input type="checkbox" %camera_vflip% name="camera_VFlip" id="camera_VFlip">
+				</div>
+			</div>
+			<div class="ui-grid-solo">
+				<div class="ui-block-a">
+					<label for="camera_HighQuality">High Pixel processing</label>
+					<input type="checkbox" %camera_HighQuality% name="camera_HighQuality" id="camera_HighQuality">
+				</div>
+			</div>
+
+			<h3 class="ui-bar ui-bar-b ui-corner-all lCam">Inner Picture Usage (%%):</h3>
+			<div class="ui-grid-solo">
+				<div class="ui-block-a">
+					<select name="cam_inner_Presets" id="cam_inner_Presets">
+					</select>
+				</div>
+			</div>
+			<div id="cam_inner_custom">
+				<div class="ui-grid-a">
+					<div class="ui-block-a">
+						<label for="slider_camInnerHori">Horizontal</label>
+						<input type="range" name="slider_camInnerHori" id="slider_camInnerHori" value="1" min="1" max="50" data-highlight="true" data-popup-enabled="true" data-show-value="true" data-theme="b">
+					</div>
+					<div class="ui-block-b">
+						<label for="slider_camInnerVert">Vertical</label>
+						<input type="range" name="slider_camInnerVert" id="slider_camInnerVert" value="1" min="1" max="50" data-highlight="true" data-popup-enabled="true" data-show-value="true" data-theme="b">
+					</div>
+				</div>
+			</div>
+
+
+			<h3 class="ui-bar ui-bar-b ui-corner-all lCam">Camera Color Mode:</h3>
+			<div class="ui-grid-solo">
+				<div class="ui-block-a">
+					<select name="camera_CamMode" id="camera_CamMode">
+					</select>
+				</div>
+			</div>
+			<div id="camera_CamMode_custom">
+				<div class="ui-grid-solo">
+					<div class="ui-block-a">
+						<label for="slider_camDetailLevel">Color Sectors per Side:</label>
+						<input type="range" name="slider_camDetailLevel" id="slider_camDetailLevel" step="2" value="7" min="3" max="15" data-highlight="true" data-popup-enabled="true" data-show-value="true" data-theme="b">
+						<label for="camera_DetailSmooth">Smooth transitions between sectors</label>
+						<input type="checkbox" %camera_DetailSmooth% name="camera_DetailSmooth" id="camera_DetailSmooth">
+					</div>
+				</div>
+			</div>
+			
+			<h3 class="ui-bar ui-bar-b ui-corner-all lCam">Camera Frame Smoothing</h3>
+			<div class="ui-grid-solo">
+				<div class="ui-block-a">
+					<select name="camera_CamSmooth" id="camera_CamSmooth">
+					</select>
+				</div>
+			</div>
+			<div id="camera_CamSmooth_custom">
+				<div class="ui-grid-solo">
+					<div class="ui-block-a">
+						<label for="camera_CamSmoothEnable">Smooth Color Motion between Camera Frames</label>
+						<input type="checkbox" %camera_CamSmoothEnable% name="camera_CamSmoothEnable" id="camera_CamSmoothEnable">
+					
+						<label for="slider_CamSmoothMaxFrames">Maximum Smoothing Steps</label>
+						<input type="range" name="slider_CamSmoothMaxFrames" id="slider_CamSmoothMaxFrames" step="1" value="4" min="1" max="8" data-highlight="true" data-popup-enabled="true" data-show-value="true" data-theme="b">
+						<label for="slider_CamSmoothMaxDiff">Maximum Color difference</label>
+						<input type="range" name="slider_CamSmoothMaxDiff" id="slider_CamSmoothMaxDiff" step="8" value="128" min="8" max="240" data-highlight="true" data-popup-enabled="true" data-show-value="true" data-theme="b">
+					</div>
+				</div>
+			</div>
+			
+		</div>
+
+		<div data-role="collapsible" data-collapsed="false" data-collapsed-icon="bullets">
+			<h3 class="ui-bar ui-bar-b ui-corner-all lCam-primary">Camera Calibration Options</h3>
+	
+			<h3 class="ui-bar ui-bar-b ui-corner-all lCam">Whitebalance Mode:</h3>
+			<div class="ui-grid-solo">
+				<div class="ui-block-a">
+					<select name="camera_CamPresets" id="camera_CamPresets">
+					</select>
+				</div>
+				<div class="ui-block-a">
+					<button name="camera_reset_default" id="camera_reset_default" class="ui-btn ui-btn-icon-right ui-shadow-icon ui-icon-refresh">Reset to default</button>
+				</div>
+			</div>
+			<div id="cam_whitebalance_custom">
+				<h3 class="ui-bar ui-bar-b ui-corner-all lCam">Whitebalance Control Options:</h3>
+				<div class="ui-grid-solo">
+					<div class="ui-block-a">
+						<label for="camera_Whitebalance">Enable/Disable Whitebalance</label>
+						<input type="checkbox" %camera_whitebalance% name="camera_Whitebalance" id="camera_Whitebalance">
+					</div>
+					<div class="ui-block-a">
+						<label for="camera_AwbGainControl">Auto Whitebalance Gain Control</label>
+						<input type="checkbox" %camera_awbgain% name="camera_AwbGainControl" id="camera_AwbGainControl">
+					</div>
+					<div class="ui-block-a">
+						<label for="camera_WbMode">Whitebalance Mode:</label>
+						<select name="camera_WbMode" id="camera_WbMode">
+						</select>
+					</div>
+				</div>
+			</div>
+			
+			<h3 class="ui-bar ui-bar-b ui-corner-all lCam">Lightexposure Calibration:</h3>
+			<div class="ui-grid-solo">
+				<div class="ui-block-a">
+					<select name="cam_exposure_Presets" id="cam_exposure_Presets">
+					</select>
+				</div>
+				<div class="ui-block-a">
+					<button name="cam_exposure_reset_default" id="cam_exposure_reset_default" class="ui-btn ui-btn-icon-left ui-shadow-icon ui-icon-refresh">Reset to default</button>
+				</div>
+			</div>
+		</div>
+
+		<div data-role="collapsible" data-collapsed-icon="camera">
+			<h3 class="ui-bar ui-bar-b ui-corner-all lCam-primary">Video / Image Calibration Options</h3>
+			
+			<h3 class="ui-bar ui-bar-b ui-corner-all lCam">Color Calibration:</h3>
+			<div class="ui-grid-solo">
+				<div class="ui-block-a">
+					<label for="slider_camColorRed">Red Correction value:</label>
+					<input type="range" name="slider_camColorRed" id="slider_camColorRed" value="100" min="5" max="200" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true" style="background:#FF0000" data-theme="b">
+				</div>
+				<div class="ui-block-a">
+					<label  for="slider_camColorGreen">Green Correction value:</label>
+					<input type="range" name="slider_camColorGreen" id="slider_camColorGreen" value="100" min="5" max="200" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true" style="background:#00A000" data-theme="b">
+				</div>
+				<div class="ui-block-a">
+					<label  for="slider_camColorBlue">Blue Correction value:</label>
+					<input type="range" name="slider_camColorBlue" id="slider_camColorBlue" value="100" min="5" max="200" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true" style="background:#0000FF" data-theme="b">
+				</div>
+			</div>
+			
+			<h3 class="ui-bar ui-bar-b ui-corner-all lCam">Color Enhancement:</h3>
+			<div class="ui-grid-solo">
+				<div class="ui-block-a">
+					<select name="cam_color_Presets" id="cam_color_Presets">
+					</select>
+				</div>
+			</div>
+			<div id="cam_color_enhancement_custom">
+				<h3 class="ui-bar ui-bar-b ui-corner-all lCam">Color Boost Options:</h3>
+				<div class="ui-grid-solo">
+					<div class="ui-block-a">
+						<label for="cam_slider_colorBoost">Color Boost:</label>
+						<input type="range" name="cam_slider_colorBoost" id="cam_slider_colorBoost" value="0" min="0" max="100" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+					<div class="ui-block-a">
+						<label for="cam_slider_colorBoostBalance">Color Boost Balance</label>
+						<input type="range" name="cam_slider_colorBoostBalance" id="cam_slider_colorBoostBalance" value="0" min="0" max="100" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+					<div class="ui-block-a">
+						<label for="cam_slider_colorBoostMin">Color Boost Smoothing</label>
+						<input type="range" name="cam_slider_colorBoostMin" id="cam_slider_colorBoostMin" value="0" min="0" max="100" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+					<div class="ui-block-a">
+						<label for="cam_slider_colorBoostThreshold">Color Boost Threshold</label>
+						<input type="range" name="cam_slider_colorBoostThreshold" id="cam_slider_colorBoostThreshold" value="0" min="0" max="255" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+					<div class="ui-block-a">
+						<label for="cam_slider_colorBoostRed">Red Boost Level:</label>
+						<input type="range" name="cam_slider_colorBoostRed" id="cam_slider_colorBoostRed" value="100" min="5" max="100" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true" style="background:#FF0000" data-theme="b">
+					</div>
+					<div class="ui-block-a">
+						<label for="cam_slider_colorBoostGreen">Green Boost Level:</label>
+						<input type="range" name="cam_slider_colorBoostGreen" id="cam_slider_colorBoostGreen" value="100" min="5" max="100" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true" style="background:#00A000" data-theme="b">
+					</div>
+					<div class="ui-block-a">
+						<label for="cam_slider_colorBoostBlue">Blue Boost Level:</label>
+						<input type="range" name="cam_slider_colorBoostBlue" id="cam_slider_colorBoostBlue" value="100" min="5" max="100" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true" style="background:#0000FF" data-theme="b">
+					</div>
+				</div>
+				<h3 class="ui-bar ui-bar-b ui-corner-all lCam">Camera Color Options:</h3>
+				<div class="ui-grid-solo">
+					<div class="ui-field-contain">
+						<label for="slider_camSaturation">Camera Saturation Level</label>
+						<input type="range" name="slider_camSaturation" id="slider_camSaturation" value="0" min="-2" max="2" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+				</div>
+			</div>
+			
+			<h3 class="ui-bar ui-bar-b ui-corner-all lCam">Brightness Options:</h3>
+			<div class="ui-grid-solo">
+				<div class="ui-block-a">
+					<select name="cam_brightness_Presets" id="cam_brightness_Presets">
+					</select>
+				</div>
+			</div>
+			<div id="cam_brightness_enhancement_custom">
+				<div class="ui-field-contain">
+					<label for="cam_slider_colorValueGain">Brightness (Percent):</label>
+					<input type="range" name="cam_slider_colorValueGain" id="cam_slider_colorValueGain" value="100" min="5" max="500" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+				</div>
+			</div>
+			<div class="ui-field-contain">
+				<label for="cam_slider_colorMinimumLuminosity">Minimum Luminosity:</label>
+				<input type="range" name="cam_slider_colorMinimumLuminosity" id="cam_slider_colorMinimumLuminosity" value="0" min="0" max="255" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+			</div>			
+		</div>
+	
+		<div data-role="collapsible" data-ci="v">
+			<h3 class="ui-bar ui-bar-b ui-corner-all lCam-primary">Adaptive Exposure Options</h3>
+			<div class="ui-grid-solo">
+				<div class="ui-block-a">
+					<label for="camera_adptexp">Adaptive Exposure Control</label>
+					<input type="checkbox" %camera_adptexp% name="camera_adptexp" id="camera_adptexp">
+				</div>
+				<div class="ui-block-a">
+					<label for="slider_camWhiteActThreshold">High Activation Threshold Value</label>
+					<input type="range" name="slider_camWhiteActThreshold" id="slider_camWhiteActThreshold" step="8" value="0" min="64" max="255" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+				</div>
+				<div class="ui-block-a">
+					<label for="slider_camWhiteMinimumAmount">High Minimum matching Amount</label>
+					<input type="range" name="slider_camWhiteMinimumAmount" id="slider_camWhiteMinimumAmount" step="1" value="0" min="0" max="100" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+				</div>
+			</div>
+
+			<div data-role="collapsible">
+				<h3 class="lCam">Advanced Adaptive Exposure Options</h3>
+				<div class="ui-grid-solo">
+					<div class="ui-block-a">
+						<label for="slider_camAecMinValue">Minimum AEC Value</label>
+						<input type="range" name="slider_camAecMinValue" id="slider_camAecMinValue" step="8" value="0" min="0" max="600" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+					<div class="ui-block-a">
+						<label for="slider_camAecMaxValue">Maximum AEC Value</label>
+						<input type="range" name="slider_camAecMaxValue" id="slider_camAecMaxValue" step="8" value="0" min="0" max="1200" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+					<div class="ui-block-a">
+						<label for="slider_camAecValue">Last AEC Value</label>
+						<input type="range" name="slider_camAecValue" id="slider_camAecValue" step="8" value="0" min="0" max="1200" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+					<div class="ui-block-a">
+						<label for="slider_camAdaptiveChangePercent">AEC Correction Steps(Percent)</label>
+						<input type="range" name="slider_camAdaptiveChangePercent" id="slider_camAdaptiveChangePercent" step="1" value="0" min="1" max="50" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+					<div class="ui-block-a">
+						<label for="slider_camBeforeWhiteActivationTreshold">Low Activation Difference Value</label>
+						<input type="range" name="slider_camBeforeWhiteActivationTreshold" id="slider_camBeforeWhiteActivationTreshold" step="4" value="0" min="0" max="64" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+					<div class="ui-block-a">
+						<label for="slider_camAdaptiveChangeDelay">Correction Change delay</label>
+						<input type="range" name="slider_camAdaptiveChangeDelay" id="slider_camAdaptiveChangeDelay" step="10" value="0" min="0" max="1000" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+				</div>
+			</div>
+		</div>
+	
+		<div data-role="collapsible" data-ci="v">
+			<h3 class="ui-bar ui-bar-b ui-corner-all lCam-primary">Adaptive Gain Control Options</h3>
+			<div class="ui-grid-solo">
+				<div class="ui-block-a">
+					<label for="camera_adptgain">Adaptive Gain Control</label>
+					<input type="checkbox" %camera_adptgain% name="camera_adptgain" id="camera_adptgain">
+				</div>
+				<div class="ui-block-a">
+					<label for="slider_camAdaptiveGainMax">Max Gain Level</label>
+					<input type="range" name="slider_camAdaptiveGainMax" id="slider_camAdaptiveGainMax" step="1" value="0" min="0" max="16" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+				</div>
+				<div class="ui-block-a">
+					<label for="slider_camAgcGain">Last Gain Level</label>
+					<input type="range" name="slider_camAgcGain" id="slider_camAgcGain" value="0" min="0" max="30" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+				</div>
+			</div>
+		</div>
+			
+		<div data-role="collapsible" data-collapsed-icon="gear">
+			<h3 class="ui-bar ui-bar-b ui-corner-all lCam-primary">Black Screen Detection Options</h3>
+			<div class="ui-grid-solo">
+				<div class="ui-field-contain">
+					<label for="slider_camActivationThreshold">Black color detection level:</label>
+					<input type="range" name="slider_camActivationThreshold" id="slider_camActivationThreshold" value="0" min="0" max="128" data-highlight="true" data-popup-enabled="true" data-show-value="true" data-theme="b">
+				</div>
+				<div class="ui-field-contain">
+					<label for="slider_camMinPixelAmount">Minimum non-black Pixel amount (percent):</label>
+					<input type="range" name="slider_camMinPixelAmount" id="slider_camMinPixelAmount" value="0" min="0" max="100" step="5" data-highlight="true" data-popup-enabled="true" data-show-value="true" data-theme="b">
+				</div>
+				<div class="ui-field-contain">
+					<label for="slider_camsBlackthresholdSmooth">Black color detection smoothing:</label>
+					<input type="range" name="slider_camsBlackthresholdSmooth" id="slider_camsBlackthresholdSmooth" value="0" min="0" max="16" data-highlight="true" data-popup-enabled="true" data-show-value="true" data-theme="b">
+				</div>
+				<div class="ui-field-contain">
+					<label for="slider_camBlackRemoveTreshold">Black pixel removal level:</label>
+					<input type="range" name="slider_camBlackRemoveTreshold" id="slider_camBlackRemoveTreshold" value="0" min="0" max="128" data-highlight="true" data-popup-enabled="true" data-show-value="true" data-theme="b">
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="camera_developer" class="ui-body" style="display: none;">
+		<div data-role="collapsible" data-ci="v">
+			<h3 class="ui-bar ui-bar-b ui-corner-all lCam">DEVELOPER Camera Options (DO NOT TOUCH)</h3>
+			<div class="ui-grid-solo">
+				<div class="ui-block-a">
+					<label for="camera_bpc">Black Pixel Correction</label>
+					<input type="checkbox" %camera_bpc% name="camera_bpc" id="camera_bpc">
+				</div>
+				<div class="ui-block-a">
+					<label for="camera_wpc">White Pixel Correction</label>
+					<input type="checkbox" %camera_wpc% name="camera_wpc" id="camera_wpc">
+				</div>
+				<div class="ui-block-a">
+					<label for="camera_denoise">Camera  Denoise</label>
+					<input type="checkbox" %camera_denoise% name="camera_denoise" id="camera_denoise">
+				</div>
+			</div>
+			<div data-role="collapsible">
+				<h3>Camera Sensor Exposure Options</h3>
+				<div class="ui-grid-solo">
+					<div class="ui-block-a">
+						<label for="camera_lenc">Camera Lens Correction</label>
+						<input type="checkbox" %camera_lenc% name="camera_lenc" id="camera_lenc">
+					</div>
+					<div class="ui-block-a">
+						<label for="camera_rawgma">Camera Raw Gamma</label>
+						<input type="checkbox" %camera_rawgma% name="camera_rawgma" id="camera_rawgma">
+					</div>
+					<div class="ui-block-a">
+						<label for="slider_camContrast">Contrast:</label>
+						<input type="range" name="slider_camContrast" id="slider_camContrast" value="0" min="-2" max="2" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+					<div class="ui-block-a">
+						<label for="slider_camBrightness">Brightness</label>
+						<input type="range" name="slider_camBrightness" id="slider_camBrightness" value="-2" min="-2" max="2" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+				</div>
+			</div>
+			<div data-role="collapsible">
+				<h3>Internal Camera Exposure Options</h3>
+				<div class="ui-grid-solo">
+					<h3>Camera Exposure Options</h3>
+					<div class="ui-block-a">
+						<label for="camera_aec">Camera Auto Exposure Control</label>
+						<input type="checkbox" %camera_aec% name="camera_aec" id="camera_aec">
+					</div>
+					<div class="ui-block-a">
+						<label for="camera_Aec2">Camera Auto Exposure Sensor (AEC2)</label>
+						<input type="checkbox" %camera_aec2% name="camera_Aec2" id="camera_Aec2">
+					</div>
+					<div class="ui-block-a">
+						<label for="slider_camAeLevels">Auto Exposure Sensor Level</label>
+						<input type="range" name="slider_camAeLevels" id="slider_camAeLevels" value="0" min="-2" max="2" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+					</div>
+					<h3>Gain Control Options</h3>
+					<div class="ui-block-a">
+						<label for="camera_Gaincontrol">Enable/Disable Gaincontrol:</label>
+						<input type="checkbox" %camera_gaincontrol% name="camera_Gaincontrol" id="camera_Gaincontrol">
+					</div>
+				</div>		
+			</div>
+			<div data-role="collapsible">
+				<h3 class="ui-bar ui-bar-b ui-corner-all">EXPERT Options (DO NOT TOUCH)</h3>
+				<div class="ui-field-contain">
+					<label for="camera_Performance">Camera Performance:</label>
+					<select name="camera_Performance" id="camera_Performance">
+					</select>
+				</div>
+				<div class="ui-field-contain">
+					<label for="camera_resolution">Resolution:</label>
+					<select name="camera_resolution" id="camera_resolution">
+					</select>
+					<label for="slider_camQuality">JPEG Quality</label>
+					<input type="range" name="slider_camQuality" id="slider_camQuality" value="40" min="0" max="63" data-highlight="true" data-popup-enabled="true" data-show-value="true">
+				</div>
+				<div class="ui-grid-solo">
+					<div class="ui-block-a">
+						<label for="camera_camFlicker">Flickering Detection:</label>
+						<select name="camera_camFlicker" id="camera_camFlicker">
+						</select>
+					</div>
+					<div class="ui-block-a">
+						<label for="camera_camFreq">Camera Frequence:</label>
+						<select name="camera_camFreq" id="camera_camFreq">
+						</select>
+					</div>
+					<div class="ui-block-a">
+						<label for="camera_camFbcount">Framebuffer Count:</label>
+						<select name="camera_camFbcount" id="camera_camFbcount">
+						</select>
+					</div>
+					<div class="ui-block-a">
+						<label for="camera_dcw">Downsize Control</label>
+						<input type="checkbox" %camera_dcw% name="camera_dcw" id="camera_dcw">
+					</div>
+					<div class="ui-block-a">
+						<label for="camera_overclock">Overclock Camera Sensor</label>
+						<input type="checkbox" %camera_overclock% name="camera_overclock" id="camera_overclock">
+					</div>
+					<div class="ui-block-a">
+						<label for="camera_SpecialEffect">Special Effect:</label>
+						<select name="camera_SpecialEffect" id="camera_SpecialEffect">
+						</select>
+					</div>
+					<div class="ui-block-a">
+						<label for="camera_Colorbar">Enable/Disable Colorbar</label>
+						<input type="checkbox" name="camera_Colorbar" id="camera_Colorbar">
+					</div>
+				</div>
+				<h3 class="ui-bar ui-bar-b ui-corner-all">Experimental Options</h3>
+				<div class="ui-field-contain">
+					<label for="camera_GainceilingSensor">Gainceiling Sensor:</label>
+					<select name="camera_GainceilingSensor" id="camera_GainceilingSensor">
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div data-role="footer" data-position="fixed" data-tt="0" data-hide-during-focus="" data-theme="b" id="cam_preview" class="ui-body ui-body-a uFW">
+		<div class="ui-body ui-body-b uFW" data-role="collapsible" data-collapsed="false" data-fullscreen="true" data-theme="a" data-content-theme="b" data-collapsed-icon="carat-u" data-expanded-icon="carat-d">
+			<legend>Camera Live Preview</legend>
+			<div id="camera_view" style="width:320px;height:240px;margin:auto">
+				<img id="camera_view_img" style="width:320px;height:240px;background:url('cam.jpg');background-size:cover;background-blend-mode:screen;">
+				<div id="camera_point_1" class="drag drag-topleft ui-widget-content"></div>
+				<div id="camera_point_2" class="drag drag-topright ui-widget-content"></div>
+				<div id="camera_point_3" class="drag drag-bottomleft ui-widget-content"></div>
+				<div id="camera_point_4" class="drag drag-bottomright ui-widget-content"></div>
+			</div>
+			<div class="uC">
+				<fieldset data-role="controlgroup" data-type="horizontal" data-theme="b"> 
+					<label for="camera_img_jpg">Live Image</label>
+					<input type="radio" name="camera_img_format" id="camera_img_jpg" value="cam.jpg">
+					<button name="camera_img_refresh" id="camera_img_refresh" class="ui-btn ui-icon-refresh">Reload</button>
+					<label for="camera_img_mjpeg">Live Video</label>
+					<input type="radio" name="camera_img_format" id="camera_img_mjpeg" value="cam.mjpeg">
+					<button name="camera_img_stop" id="camera_img_stop" class="ui-btn ui-icon-stop">Stop</button>
+				</fieldset>
+			</div>
+		</div>
+	</div>	
+
+</div>
+
+<script>
+// Tab needs to be created after page load here!
+initCameraTab(); 
+</script>
+
+<!-- Include Setting defaults from controller -->
+<script src="controllersettings_camera.js"></script>
+
+

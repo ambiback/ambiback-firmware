@@ -1,0 +1,164 @@
+<div id="tabs-ambient">
+	<h3 class="ui-bar ui-bar-b ui-corner-all lA">Ambient Mode</h3>
+	<div id="ui_bar_form_camera" class="ui-bar ui-bar-b">
+
+		<!-- Tabs -->
+		<div id="tabs" data-role="tabs" class="ui-body ui-body-b ui-corner-all" style="margin-bottom:0em;">
+			<div data-role="navbar">
+			<ul>
+				<li><a href="#tabs-color-sliders" class="ui-btn-active">Sliders</a></li>
+				<li><a href="#tabs-color-colors">Colors</a></li>
+				<li><a href="#tabs-color-scenes">Scenes</a></li>
+			</ul>
+			</div>
+
+			<!-- Sliders -->
+			<div id="tabs-color-sliders">
+				<div id="ui-bar-form" class="ui-bar ui-bar-b">
+					<div data-role="header">
+						<h2>Color Sliders</h2>
+					</div>
+					<div class="ui-field-contain">
+						<label for="slider_colorRed">Red:</label>
+						<input type="range" name="ambient_slider_colorRed" id="ambient_slider_colorRed" value="255" min="0" max="255" data-highlight="true" style="background:#FF0000" data-popup-enabled="true" data-show-value="true" data-theme="b">
+					</div>
+					<div class="ui-field-contain">
+						<label for="slider_colorGreen">Green:</label>
+						<input type="range" name="ambient_slider_colorGreen" id="ambient_slider_colorGreen" value="255" min="0" max="255" data-highlight="true" style="background:#00A000" data-popup-enabled="true" data-show-value="true" data-theme="b">
+					</div>
+					<div class="ui-field-contain">
+						<label for="slider_colorBlue">Blue:</label>
+						<input type="range" name="ambient_slider_colorBlue" id="ambient_slider_colorBlue" value="255" min="0" max="255" data-highlight="true" style="background:#0000FF" data-popup-enabled="true" data-show-value="true" data-theme="b">
+					</div>
+					<div class="ui-field-contain">
+					<fieldset data-role="controlgroup">
+						<legend>Controll Actions:</legend>
+						<fieldset data-role="controlgroup" data-type="horizontal">
+							<button data-icon="power" id="color_slider_activate" >Enable Color</button>
+							<button data-icon="power" id="color_slider_deactivate" >Disable Color</button>
+							</fieldset>
+							<div id="ambient_slider_preview" style="width: 100%; height: 120px; border: 1px solid black; margin: auto;"></div>
+						</fieldset>
+					</div>
+				</div>
+			</div>
+
+			<!-- Colors -->
+			<div id="tabs-color-colors">
+				<div id="ui-bar-form" class="ui-bar ui-bar-b">
+					<div data-role="header">
+						<h2>Choose Color</h2>
+					</div>
+
+					todo
+				</div>
+			</div>
+
+			<!-- Scenes: Ambient presets -->
+			<div id="tabs-color-scenes">
+				<div id="ui-bar-form" class="ui-bar ui-bar-b">
+					<div data-role="header">
+						<h2>Select Scene</h2>
+					</div>
+					<div class="ui-field-contain">
+						<label for="ambient_preset">Preset:</label>
+						<select name="ambient_preset" id="ambient_preset" data-theme="b">
+							<optgroup label="Scenes">
+								<option value="0">Solid</option>
+								<option value="1">Fire</option>
+								<option value="2">Christmas</option>
+								<option value="3">Halloween</option>
+								<option value="4">Ocean</option>
+								<option value="5">Sunset</option>
+								<option value="6">Aurora</option>
+								<option value="7">Candle</option>
+								<option value="8">Rainbow</option>
+								<option value="9">Thunderstorm</option>
+								<option value="10" title="Smooth layered gradients with subtle sparkle and cinematic motion.">Prism Drift</option>
+								<option value="11" title="High-energy segmented chase with flashes and neon contrast.">Neon Surge</option>
+							</optgroup>
+							<optgroup label="Health Scenes">
+								<option value="12" title="40 Hz blue pulse. Intensity sets the minimum level and the peak follows global brightness.">40 Hz Gamma</option>
+								<option value="13" title="10 Hz red pulse with soft ramping. Intensity sets the minimum level and the peak follows global brightness.">10 Hz Alpha</option>
+								<option value="14" title="34 Hz red pulse. Intensity sets the minimum level and the peak follows global brightness.">34 Hz Gamma (Red)</option>
+								<option value="15" title="Red breathing light. Intensity sets the minimum level; Speed still controls the breathing rate.">Rotlicht Abend</option>
+							</optgroup>
+						</select>
+					</div>
+					<div class="ui-field-contain">
+						<label for="ambient_speed">Speed (1–10)</label>
+						<input type="range" name="ambient_speed" id="ambient_speed" value="5" min="1" max="10" data-highlight="true" data-popup-enabled="true" data-show-value="true" data-theme="b">
+					</div>
+					<div class="ui-field-contain">
+						<label for="ambient_intensity">Intensity (1-100):</label>
+						<input type="range" name="ambient_intensity" id="ambient_intensity" value="80" min="1" max="100" data-highlight="true" data-popup-enabled="true" data-show-value="true" data-theme="b">
+					</div>
+					<div class="ui-field-contain">
+						<label for="ambient_health_intensity">Health Pulse Floor (1-100):</label>
+						<input type="range" name="ambient_health_intensity" id="ambient_health_intensity" value="80" min="1" max="100" data-highlight="true" data-popup-enabled="true" data-show-value="true" data-theme="b">
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+	
+</div>
+
+<script>
+function iA() {
+	// Init the fucking TAB!
+	$("#tabs").trigger('create');
+	
+	// Beta remove
+//	rL("#tabs-color-colors");
+//	rL("#tabs-color-scenes");
+
+	// Set Tab Loaded
+	window.tVars['link_ambient'] = true;
+	
+	// Fix Sliders Scrolling issue
+	fSN(); 
+
+	// Hide Loading form!
+	hL();
+}
+
+// Init Jquery Mobile first
+iA(); 
+
+// --- Bind Ambient Mode Events
+// Sliders Controls
+$( "#ambient_slider_colorRed" ).on( "slidestop", hCS);
+$( "#ambient_slider_colorGreen" ).on( "slidestop", hCS);
+$( "#ambient_slider_colorBlue" ).on( "slidestop", hCS);
+$( "#color_slider_activate" ).on( "click", hCS);
+$( "#color_slider_deactivate" ).on( "click", function(){
+	$( "#result" ).load( "setcolor?color=" + "FF000000", hCR );
+	$( "#result" ).load( "setcolormode?mode=0" + $(this).val(), hCR );
+});
+	
+
+
+// Ambient preset, speed, intensity
+$( "#ambient_preset" ).on( "change", function(){
+	$( "#result" ).load( "setparam?param=setambientpreset&value=" + $(this).val(), hCR );
+});
+$( "#ambient_speed" ).on( "slidestop", function(){
+	$( "#result" ).load( "setparam?param=setambientspeed&value=" + $(this).val(), hCR );
+});
+$( "#ambient_intensity" ).on( "slidestop", function(){
+	$( "#result" ).load( "setparam?param=setambientintensity&value=" + $(this).val(), hCR );
+});
+$( "#ambient_health_intensity" ).on( "slidestop", function(){
+	$( "#result" ).load( "setparam?param=setambienthealthintensity&value=" + $(this).val(), hCR );
+});
+
+// Colors Settings
+// ---
+
+// Init first hCS
+$( "#ambient_slider_preview" ).css('background-color', '#FFFFFF');
+
+// hCS();
+</script>

@@ -1,0 +1,2 @@
+# Ensure shell scripts use LF for cross-platform compatibility
+*.sh text eol=lf

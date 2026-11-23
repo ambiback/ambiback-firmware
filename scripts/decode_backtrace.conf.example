@@ -1,0 +1,12 @@
+# AmbiBack backtrace decoder configuration
+# Copy to decode_backtrace.conf and adjust paths
+
+# Build root (contains m5camtx/, m5alit/, etc. with .elf files)
+AMIBACK_BUILD_PATH="../AmbiBack.USBFlasher/build/_build"
+
+# Toolchain bin dir (for xtensa-esp32-elf-addr2line)
+# WSL: use relative path:
+#   AMIBACK_TOOLCHAIN_BIN="../AmbiBack.USBFlasher/build/buildtools/2.0.0.custom/tools/xtensa-esp32-elf-gcc/gcc8_4_0-esp-2021r1/bin"
+# Windows: use D:\ path (script converts to /mnt/d/... on WSL):
+#   AMIBACK_TOOLCHAIN_BIN="D:/!cvsroot/_Misc/AmbiBack.USBFlasher/build/buildtools/2.0.0.custom/tools/xtensa-esp32-elf-gcc/gcc8_4_0-esp-2021r1/bin"
+AMIBACK_TOOLCHAIN_BIN="../AmbiBack.USBFlasher/build/buildtools/2.0.0.custom/tools/xtensa-esp32-elf-gcc/gcc8_4_0-esp-2021r1/bin"

@@ -1,0 +1,46 @@
+<!-- Include DreamScreen Script from controller -->
+<script src="include_ambiback_script_dreamscreen.js"></script>
+<style>
+	.controlgroup-dreamscreen { float: left; }
+	.controlgroup-dreamscreen_button { width: auto !important; }
+</style>
+			
+<div id="tabs-dreamscreen">
+	<div id="ui_form_dreamscreen" class="ui-body">
+		<h3 class="ui-bar ui-bar-b ui-corner-all lDS">DreamScreen Support</h3>
+	
+		<div class="ui-field-contain" name="div_dreamscreen_emulation" id="div_dreamscreen_emulation">
+			<label for="dreamscreen_emulation">Enable DreamScreen Emulation</label>
+			<input type="checkbox" %dreamscreen_emu% name="dreamscreen_emulation" id="dreamscreen_emulation">
+			<p>To enable DreamScreen emulation support, this option needs to be enabled. The controller will subscribe to the selected DreamScreen Group in order to received LED RGB Data from main DreamScreen device like the Sidekicks do. The data will be passed to enabled <a href="#" OnClick="$('#link_hue').trigger('click');">Smart Lighting devices</a>.</p>
+		</div>
+		<div class="ui-field-contain">
+			<label for="dreamscreen_group">Subscribe to DreamScreen Group:</label>
+			<select name="dreamscreen_group" id="dreamscreen_group">
+			</select>
+		</div>
+		<div class="ui-field-contain">
+			<label for="dreamscreen_lowcolorsmoothing">Reverse HDR Tone Mapping Level:</label>
+			<input type="range" name="dreamscreen_lowcolorsmoothing" id="dreamscreen_lowcolorsmoothing" value="0" min="0" max="100" data-highlight="true" data-popup-enabled="true">
+		</div>
+		<div class="ui-field-contain">
+			<fieldset data-role="controlgroup" data-type="horizontal">
+				<legend>Actions: </legend>
+				<button id="smart_RefreshDreamScreenDevices" class="ui-btn ui-icon-recycle ui-btn-icon-left ui-corner-all">Search for DreamScreen Groups</button>
+				<button id="smart_ScanForDreamScreenDevices" class="ui-btn ui-icon-search ui-btn-icon-left ui-corner-all">Find new DreamScreen Devices</button>
+			</fieldset>
+		</div>
+		<div class="ui-field-contain">
+		</div>
+		<div id="ui_form_dremascreen_new_devices">
+			<div data-content-theme="b" id="dreamscreen_devices">
+			</div>
+		</div>
+		
+	</div>
+</div>
+
+<script>
+// Tab needs to be created after page load here!
+initDreamScreenTab(); 
+</script>
