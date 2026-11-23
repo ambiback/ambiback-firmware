@@ -212,7 +212,7 @@ void global::BuildGeneratedApPasswordFromMac(char* pszMac, char* pszOut, size_t 
     return;
   }
 
-  uint32_t crcMac = esp_crc32_le(UINT16_MAX, (uint8_t const *)pszMac, strlen(pszMac));
+  uint32_t crcMac = esp_crc32_le((uint32_t)AMBIBACK_AP_PASSWORD_SEED, (uint8_t const *)pszMac, strlen(pszMac));
   snprintf_P(pszOut, stOutLen, PSTR("%.12u"), crcMac);
 }
 

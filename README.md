@@ -35,6 +35,7 @@ Diese Werte lassen sich als Compiler-Flag überschreiben:
 
 - `AMBIBACK_FIRMWARE_BASE_URL`: Basisadresse für Firmware-Updates. Standard ist `http://firmware.ambiback.com/firmware/esp32`, der Gerätepfad wird automatisch angehängt.
 - `AMBIBACK_SYSLOG_SERVER`: IP-Adresse des Syslog-Servers. Standardmäßig ist keine eingetragen, der Wert lässt sich auch im Gerät setzen.
+- `AMBIBACK_AP_PASSWORD_SEED`: 32-Bit-Startwert für das erzeugte Access-Point-Passwort, definiert in `globalincludes.h`. Der Standard `0x0000FFFF` hält das Passwort bestehender Geräte unverändert. Für eigene Builds einen eigenen Wert setzen, nicht einchecken und im AmbiBack Manager denselben Wert verwenden. Der Wert ist kein vollwertiger Schutz: Wer ein einziges Passwort eines Builds kennt, kann die übrigen berechnen. Setze daher zusätzlich ein eigenes AP-Passwort.
 
 ## Lizenz
 

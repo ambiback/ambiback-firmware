@@ -28,6 +28,13 @@
 #define AMBIBACK_FIRMWARE_BASE_URL "http://firmware.ambiback.com/firmware/esp32"
 #endif
 
+// Seed for the generated access point password (32-bit value).
+// Set your own value for your builds and use the same value for AmbiBack Manager.
+// The default 0x0000FFFF keeps the password of existing devices unchanged.
+#ifndef AMBIBACK_AP_PASSWORD_SEED
+#define AMBIBACK_AP_PASSWORD_SEED 0x0000FFFFUL
+#endif
+
 #define EMBED_MINIMAL_UI
 #define FORCE_WIFIWPS_FIRSTTIME false   
 #define WIFI_SETSLEEP                     // Sets Wifi.Sleep calls after connect
