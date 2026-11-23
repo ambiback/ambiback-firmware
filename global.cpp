@@ -146,6 +146,8 @@ unsigned long global::m_lWifiProvisioningDeadline = 0;
 char global::m_wifi_provisioning_token[WIFI_PROVISIONING_TOKEN_MAX];
 char global::m_wifi_provisioning_ssid[WLAN_SSID_MAX];
 char global::m_wifi_provisioning_password[WLAN_KEY_MAX];
+bool global::m_bWifiProvisioningPhysical = false;
+char global::m_szClaimKey[DEVICE_CLAIM_KEY_LEN + 1] = "";
 #endif
 
 char global::m_DebugSyslogServer[STR_IPNAME_MAX];

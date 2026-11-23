@@ -251,10 +251,11 @@ void global::ClearWifiProvisioning(void) {
   global::m_wifi_provisioning_token[0] = '\0';
   global::m_wifi_provisioning_ssid[0] = '\0';
   global::m_wifi_provisioning_password[0] = '\0';
+  global::m_bWifiProvisioningPhysical = false;
 }
 
-void global::StartWifiProvisioning(void) {
-  if (!global::GetWifiProvisioningEnabled()) {
+void global::StartWifiProvisioning(bool bForce) {
+  if (!bForce && !global::GetWifiProvisioningEnabled()) {
     global::ClearWifiProvisioning();
     return;
   }
@@ -300,7 +301,80 @@ void global::StopWifiProvisioning(void) {
   }
 }
 
+// Decides at boot whether the setup window opens. Configured devices stay closed
+// unless the user power-cycles them several times in a row.
+void global::HandleProvisioningBoot(void) {
+  byte bPowerOns = 0;
+  if (esp_reset_reason() == ESP_RST_POWERON) {
+    bPowerOns = global::m_pEepromHelper->GetSettingByte("BootCnt", 0) + 1;
+  }
+  if (bPowerOns >= WIFI_PROVISIONING_POWER_CYCLES) {
+    global::m_pEepromHelper->SetSettingByte("BootCnt", 0);
+    global::OpenProvisioningByUser();
+    return;
+  }
+  global::m_pEepromHelper->SetSettingByte("BootCnt", bPowerOns);
+
+  if (strlen(global::GetWifiSSID()) == 0) {
+    global::StartWifiProvisioning();
+  } else if (global::GetWifiProvisioningEnabled()) {
+    // Same end state as an expired window: the SoftAP stays off at runtime.
+    global::SetWifiAPEnable(0, false);
+  }
+}
+
+// Physical presence (button or power cycles) opens the window and allows a new claim.
+void global::OpenProvisioningByUser(void) {
+  if (global::m_bWifiProvisioningActive) {
+    global::m_lWifiProvisioningDeadline = millis() + global::GetWifiProvisioningTimeoutMs();
+    global::HandleWifiAPSetup();
+  } else {
+    global::StartWifiProvisioning(true);
+  }
+  global::m_bWifiProvisioningPhysical = true;
+}
+
+bool global::CanClaimDevice(void) {
+  return global::m_bWifiProvisioningActive && (!global::IsDeviceClaimed() || global::m_bWifiProvisioningPhysical);
+}
+
+bool global::ValidateClaimKey(const char* pszKey) {
+  if (pszKey == NULL || !global::IsDeviceClaimed() || strlen(pszKey) != DEVICE_CLAIM_KEY_LEN) {
+    return false;
+  }
+  byte bDiff = 0;
+  for (int i = 0; i < DEVICE_CLAIM_KEY_LEN; i++) {
+    bDiff |= (byte)pszKey[i] ^ (byte)global::m_szClaimKey[i];
+  }
+  return bDiff == 0;
+}
+
+bool global::SetClaimKey(const char* pszKey, bool bEpprom) {
+  if (pszKey == NULL || strlen(pszKey) != DEVICE_CLAIM_KEY_LEN) {
+    return false;
+  }
+  for (int i = 0; i < DEVICE_CLAIM_KEY_LEN; i++) {
+    if (!isxdigit((unsigned char)pszKey[i])) {
+      return false;
+    }
+  }
+  memcpy(global::m_szClaimKey, pszKey, DEVICE_CLAIM_KEY_LEN);
+  global::m_szClaimKey[DEVICE_CLAIM_KEY_LEN] = '\0';
+  if (bEpprom) {
+    global::m_pEepromHelper->SetSettingString("ClaimKey", global::m_szClaimKey, DEVICE_CLAIM_KEY_LEN + 1);
+  }
+  return true;
+}
+
 void global::HandleWifiProvisioningWindow(void) {
+  static bool bPowerCycleEnded = false;
+  if (!bPowerCycleEnded && millis() > WIFI_PROVISIONING_POWER_CYCLE_MS) {
+    bPowerCycleEnded = true;
+    if (global::m_pEepromHelper->GetSettingByte("BootCnt", 0) != 0) {
+      global::m_pEepromHelper->SetSettingByte("BootCnt", 0);
+    }
+  }
+
   if (!global::m_bWifiProvisioningActive) {
     return;
   }

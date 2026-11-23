@@ -255,8 +255,8 @@ void setup() {
   _DBGPRINTF(PSTR(PSTR_SETUP "debug: DeviceID: '%s', DeviceName: '%s', Version: '%s'\n"), global::GetDeviceID(), global::GetDeviceName(), AMBIBACK_VERSION);
 
 #if defined(ENABLE_WIFI_AP)
-  // Expose the configured boot provisioning window over the provisioning AP.
-  global::StartWifiProvisioning();
+  // Open the setup window only when the device needs it or the user asked for it.
+  global::HandleProvisioningBoot();
   if (global::m_pWebServer != NULL) {
     global::m_pWebServer->StartServer();
   }
@@ -534,6 +534,12 @@ beginLoop:
           
           WiFi.disconnect(true); /* We need to disconnect the WIFI first */
           _delay(1000);
+#if defined(ENABLE_WIFI_AP)
+        } else if (timePassed > 3500) {
+          _DBGPRINTF(PSTR(PSTR_LOOP "Button >3.5 && <7.5 sec press, opening setup window\n"));
+          global::TogglePwrLedOn(0, 0, 255, true);
+          global::OpenProvisioningByUser();
+#endif
         } else {
           /* By default, we perform a REBOOT */
           global::SetShouldReboot(true); 

@@ -61,6 +61,10 @@ void EEPROMHelper::LoadSettings() {
   bValue = (byte) g_Preferences.getChar("ProvToutMin", (char)WIFI_PROVISIONING_BOOT_WINDOW_DEFAULT_MINUTES);
   _DBGPRINTF_VERBOSE(PSTR("EEPROMHelper: LoadSettings ProvToutMin=%d\n"), bValue);
   global::SetWifiProvisioningTimeoutMinutes(bValue, false);
+
+  /* Read device claim key */
+  strTmp = g_Preferences.getString("ClaimKey", "");
+  global::SetClaimKey(strTmp.c_str(), false);
 #endif
 
   /* Read DEVICE Name */

@@ -116,7 +116,7 @@ String indexProcessor(const String& var) {
   } else if(var == "HIP"){
     return String(global::GetHueBridgeIP());
   } else if(var == "HUSR"){
-    return String(global::GetHueBridgeUser());
+    return (isDeviceClaimedForWeb() ? String() : String(global::GetHueBridgeUser()));
 #else
   } else if(var == "HIP"){
     return String();
@@ -145,7 +145,7 @@ String indexProcessor(const String& var) {
   } else if(var == "system_wifi_direct_ssid"){
     return String(global::GetDeviceAPssid());
   } else if(var == "system_wifi_direct_pass"){
-    return String(global::GetDeviceAPpass());
+    return (isDeviceClaimedForWeb() ? String() : String(global::GetDeviceAPpass()));
   } else if(var == "system_provisioning_timeout"){
     return String(global::GetWifiProvisioningTimeoutMinutes());
 #endif
@@ -156,6 +156,9 @@ String indexProcessor(const String& var) {
 
 // --- OTA & generic ---
 void handleUpdate(AsyncWebServerRequest *request) {
+  if (!requireAdmin(request)) {
+    return;
+  }
   _DBGPRINTF(PSTR("WebServer:handleUpdate: %s\n"), !Update.hasError()?"OK":"FAIL");
   AsyncWebServerResponse *response = request->beginResponse(200, TEXT_HTML, !Update.hasError() ?
     PSTR( "<html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
@@ -171,6 +174,9 @@ void handleUpdate(AsyncWebServerRequest *request) {
 }
 
 void handleUpdateUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
+  if (!isAdminRequest(request)) {
+    return; // handleUpdate answers with 403
+  }
 #if defined(ESP32)
   if (xPortGetCoreID() == CONFIG_ASYNC_TCP_RUNNING_CORE) {
     if(index == 0) {
@@ -234,6 +240,9 @@ void handleEmpty(AsyncWebServerRequest *request) {
 }
 
 void handleReboot(AsyncWebServerRequest *request) {
+  if (!requireAdmin(request)) {
+    return;
+  }
   String strResult;
   bool bReboot = false;
   _DBGPRINTF(PSTR("\nWebServer: handleReboot: Check for user wanted reboot\n"));
@@ -260,6 +269,9 @@ void handleReboot(AsyncWebServerRequest *request) {
 }
 
 void handleWifiWps(AsyncWebServerRequest *request) {
+  if (!requireAdmin(request)) {
+    return;
+  }
   String strResult;
   bool bWpsMode = false;
   _DBGPRINTF(PSTR("\nWebServer: handleWifiWps: Check for user wanted WIFI WPS Mode\n"));
@@ -286,6 +298,9 @@ void handleWifiWps(AsyncWebServerRequest *request) {
 }
 
 void handleAutoUpdate(AsyncWebServerRequest *request) {
+  if (!requireAdmin(request)) {
+    return;
+  }
   String strResult;
   bool bUpdate = false;
   _DBGPRINTF(PSTR("handleAutoUpdate: START\n"));
@@ -493,7 +508,7 @@ void handleControllersettings(AsyncWebServerRequest *request) {
 
 #if defined(ENABLE_WIFI_AP)
   response->printf_P(PSTR("$(\"#system_wifi_direct_ssid\").val(\"%s\");\r\n"), global::GetDeviceAPssid() );
-  response->printf_P(PSTR("$(\"#system_wifi_direct_pass\").val(\"%s\");\r\n"), global::GetDeviceAPpass() );
+  response->printf_P(PSTR("$(\"#system_wifi_direct_pass\").val(\"%s\");\r\n"), (isAdminRequest(request) ? global::GetDeviceAPpass() : "") );
   response->printf_P(PSTR("$(\"#system_provisioning_timeout\").val(\"%d\").selectmenu(\"refresh\");\r\n"), global::GetWifiProvisioningTimeoutMinutes() );
 #else
   response->printf_P(PSTR("$(\'#system_wifi_ap\').remove();\r\n"));

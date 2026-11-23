@@ -31,6 +31,9 @@ class DebugHelper;
 #define DEVICE_ID_MAX 33
 #define DEVICE_MAC_MAX 20
 #define WIFI_PROVISIONING_TOKEN_MAX 17
+#define DEVICE_CLAIM_KEY_LEN 32                         // 128-bit key as hex
+#define WIFI_PROVISIONING_POWER_CYCLES 3                // Power-ons that open the setup window
+#define WIFI_PROVISIONING_POWER_CYCLE_MS 10000UL        // Uptime that ends a power-cycle sequence
 #define WIFI_PROVISIONING_BOOT_WINDOW_DEFAULT_MINUTES 5
 #define WIFI_PROVISIONING_BOOT_WINDOW_MIN_MINUTES 1
 #define WIFI_PROVISIONING_BOOT_WINDOW_MAX_MINUTES 60
@@ -558,7 +561,14 @@ public:
   static void StartWifiAP(void);
   static void StopWifiAP(void);
 # if defined(ENABLE_WIFI_AP)
-  static void StartWifiProvisioning(void);
+  static void StartWifiProvisioning(bool bForce = false);
+  static void HandleProvisioningBoot(void);
+  static void OpenProvisioningByUser(void);
+  static bool IsDeviceClaimed(void) { return m_szClaimKey[0] != '\0'; }
+  static bool IsProvisioningPhysical(void) { return m_bWifiProvisioningPhysical; }
+  static bool CanClaimDevice(void);
+  static bool ValidateClaimKey(const char* pszKey);
+  static bool SetClaimKey(const char* pszKey, bool bEpprom);
   static void StopWifiProvisioning(void);
   static void HandleWifiProvisioningWindow(void);
   static bool IsWifiProvisioningActive(void) { return m_bWifiProvisioningActive; }
@@ -963,6 +973,8 @@ private:
   static char m_wifi_provisioning_token[WIFI_PROVISIONING_TOKEN_MAX];
   static char m_wifi_provisioning_ssid[WLAN_SSID_MAX];
   static char m_wifi_provisioning_password[WLAN_KEY_MAX];
+  static bool m_bWifiProvisioningPhysical;
+  static char m_szClaimKey[DEVICE_CLAIM_KEY_LEN + 1];
 # endif
 
   static bool m_bSerialEnabled; 

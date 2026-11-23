@@ -449,6 +449,60 @@ void handleSetParameterPresets(AsyncWebServerRequest *request) {
 }
         
 
+bool isDeviceClaimedForWeb() {
+#if defined(ENABLE_WIFI_AP)
+  return global::IsDeviceClaimed();
+#else
+  return false;
+#endif
+}
+
+bool isAdminRequest(AsyncWebServerRequest *request) {
+#if defined(ENABLE_WIFI_AP)
+  if (!global::IsDeviceClaimed()) {
+    return true;
+  }
+  if (request->hasParam("claimkey")) {
+    return global::ValidateClaimKey(request->getParam("claimkey")->value().c_str());
+  }
+  if (request->hasParam("claimkey", true)) {
+    return global::ValidateClaimKey(request->getParam("claimkey", true)->value().c_str());
+  }
+  return false;
+#else
+  return true;
+#endif
+}
+
+static void sendForbidden(AsyncWebServerRequest *request) {
+  AsyncWebServerResponse *r = request->beginResponse(403, APP_JSON, PSTR("{\"success\":\"0\",\"status\":0,\"error\":\"device_claimed\",\"message\":\"Device key required\"}"));
+  r->addHeader(PSTR("Access-Control-Allow-Origin"), PSTR("*"));
+  request->send(r);
+}
+
+bool requireAdmin(AsyncWebServerRequest *request) {
+  if (isAdminRequest(request)) {
+    return true;
+  }
+  sendForbidden(request);
+  return false;
+}
+
+static bool isProtectedParam(const String& strParam) {
+  static const char* const aProtected[] = {
+    "setdeviceappass", "setdeviceapssid", "setwifiapenable", "setprovisioningenable", "setprovisioningtimeout",
+    "setrelaytarget", "setrelaytodirect", "setrelaywifidirect", "setrelaymode",
+    "setdebugsyslogserver", "setdebugsyslogport", "setdebugsyslog", "setdebugserial", "setdebugultra", "setwififail",
+    "sethuebridgeip", "sethuebridgeuser", "sethuebridgeclientkey"
+  };
+  for (size_t i = 0; i < sizeof(aProtected) / sizeof(aProtected[0]); i++) {
+    if (strParam.equals(aProtected[i])) {
+      return true;
+    }
+  }
+  return false;
+}
+
 void handleSetParameter(AsyncWebServerRequest *request) {
   String strResult; 
   String strValue;
@@ -458,6 +512,9 @@ void handleSetParameter(AsyncWebServerRequest *request) {
   
   if (request->hasParam("param")) {
     strParam = request->getParam("param")->value();
+    if (isProtectedParam(strParam) && !requireAdmin(request)) {
+      return;
+    }
     if (request->hasParam("value")) {
       strValue = request->getParam("value")->value();
   
@@ -1491,7 +1548,7 @@ void handleGetParametersAsJson(AsyncWebServerRequest *request){
   response->printf_P(PSTR("\t\"provisioningapsecurity\": \"%s\",\n"), "wpa2");
   response->printf_P(PSTR("\t\"deviceapenabled\": \"%d\",\n"), global::GetWifiAPEnable());
   response->printf_P(PSTR("\t\"deviceapssid\": \"%s\",\n"), global::GetDeviceAPssid());
-  response->printf_P(PSTR("\t\"deviceappass\": \"%s\",\n"), global::GetDeviceAPpass());
+  response->printf_P(PSTR("\t\"deviceappass\": \"%s\",\n"), (isAdminRequest(request) ? global::GetDeviceAPpass() : ""));
 #endif
   response->printf_P(PSTR("\t\"buttonmode\": \"%d\",\n"), global::GetButtonFunction());
   response->printf_P(PSTR("\t\"wififailhandling\": \"%d\",\n"), global::GetWifiFailHandling());
@@ -1614,7 +1671,7 @@ void handleGetParametersAsJson(AsyncWebServerRequest *request){
 #if defined(ENABLE_HUE)
   response->printf_P(PSTR("\t \"huesupportenabled\": \"%d\",\n"), global::GetHueSupport()); 
   response->printf_P(PSTR("\t \"huebridgeip\": \"%s\",\n"), global::GetHueBridgeIP()); 
-  response->printf_P(PSTR("\t \"hueubridgeuser\": \"%s\",\n"), global::GetHueBridgeUser()); 
+  response->printf_P(PSTR("\t \"hueubridgeuser\": \"%s\",\n"), (isAdminRequest(request) ? global::GetHueBridgeUser() : "")); 
   response->printf_P(PSTR("\t \"hueframelength\": \"%d\",\n"), global::GetFrameLengthDtls()); 
   response->printf_P(PSTR("\t \"huehandshaketimeout\": \"%d\",\n"), global::GetHandshakeTimeout()); 
   response->printf_P(PSTR("\t \"huepreset\": \"%d\",\n"), global::GetHuePreset()); 
@@ -1754,7 +1811,11 @@ void handleGetScanNetworksAsJson(AsyncWebServerRequest *request){
 
 #if defined(ENABLE_WIFI_AP)
 
-static void writeProvisioningStateJson(AsyncResponseStream *response) {
+static bool isProvisioningAllowed(AsyncWebServerRequest *request) {
+  return !global::IsDeviceClaimed() || global::IsProvisioningPhysical() || isAdminRequest(request);
+}
+
+static void writeProvisioningStateJson(AsyncResponseStream *response, bool bShowToken) {
   response->printf_P(PSTR("{\n"));
   response->printf_P(PSTR("\t\"active\": \"%d\",\n"), global::IsWifiProvisioningActive());
   response->printf_P(PSTR("\t\"pending\": \"%d\",\n"), global::IsWifiProvisioningPending());
@@ -1764,7 +1825,9 @@ static void writeProvisioningStateJson(AsyncResponseStream *response) {
   response->printf_P(PSTR("\t\"timeoutminutes\": \"%d\",\n"), global::GetWifiProvisioningTimeoutMinutes());
   response->printf_P(PSTR("\t\"started\": \"%lu\",\n"), global::GetWifiProvisioningStarted());
   response->printf_P(PSTR("\t\"expiresin\": \"%lu\",\n"), global::GetWifiProvisioningExpiresIn());
-  response->printf_P(PSTR("\t\"token\": \"%s\",\n"), global::GetWifiProvisioningToken());
+  response->printf_P(PSTR("\t\"token\": \"%s\",\n"), (bShowToken ? global::GetWifiProvisioningToken() : ""));
+  response->printf_P(PSTR("\t\"claimed\": \"%d\",\n"), global::IsDeviceClaimed());
+  response->printf_P(PSTR("\t\"claimable\": \"%d\",\n"), global::CanClaimDevice());
   response->printf_P(PSTR("\t\"apsecurity\": \"%s\",\n"), "wpa2");
   response->printf_P(PSTR("\t\"reason\": \"%s\",\n"),
     (!global::GetWifiProvisioningEnabled() ? "disabled" : (global::IsWifiProvisioningActive() ? "boot_window" : "idle")));
@@ -1779,12 +1842,16 @@ void handleGetProvisioningAsJson(AsyncWebServerRequest *request) {
 
   AsyncResponseStream *response = request->beginResponseStream(APP_JSON);
   ADD_CORS_HEADER(response);
-  writeProvisioningStateJson(response);
+  writeProvisioningStateJson(response, isProvisioningAllowed(request));
 
   request->send(response);
 }
 
 void handleProvisioningStart(AsyncWebServerRequest *request) {
+  if (!isProvisioningAllowed(request)) {
+    sendForbidden(request);
+    return;
+  }
   _DBGPRINTF(PSTR("WebServer::handleProvisioningStart: requested %s\n"), request->url().c_str());
 
   AsyncResponseStream *response = request->beginResponseStream(APP_JSON);
@@ -1798,6 +1865,8 @@ void handleProvisioningStart(AsyncWebServerRequest *request) {
   response->printf_P(PSTR("\t\"started\": \"%lu\",\n"), global::GetWifiProvisioningStarted());
   response->printf_P(PSTR("\t\"expiresin\": \"%lu\",\n"), global::GetWifiProvisioningExpiresIn());
   response->printf_P(PSTR("\t\"token\": \"%s\",\n"), global::GetWifiProvisioningToken());
+  response->printf_P(PSTR("\t\"claimed\": \"%d\",\n"), global::IsDeviceClaimed());
+  response->printf_P(PSTR("\t\"claimable\": \"%d\",\n"), global::CanClaimDevice());
   response->printf_P(PSTR("\t\"apsecurity\": \"%s\",\n"), "wpa2");
   response->printf_P(PSTR("\t\"reason\": \"%s\",\n"),
     (!global::GetWifiProvisioningEnabled() ? "disabled" : (global::IsWifiProvisioningActive() ? "boot_window" : "idle")));
@@ -1810,6 +1879,10 @@ void handleProvisioningStart(AsyncWebServerRequest *request) {
 }
 
 void handleProvisioningSubmit(AsyncWebServerRequest *request) {
+  if (!isProvisioningAllowed(request)) {
+    sendForbidden(request);
+    return;
+  }
   _DBGPRINTF(PSTR("WebServer::handleProvisioningSubmit: requested %s\n"), request->url().c_str());
 
   bool bTokenValid = false;
@@ -1869,7 +1942,33 @@ void handleProvisioningSubmit(AsyncWebServerRequest *request) {
   request->send(response);
 }
 
+// Stores the key chosen by the app. Needs the session token and a claimable device.
+void handleProvisioningClaim(AsyncWebServerRequest *request) {
+  bool bTokenValid = request->hasParam("token", true) &&
+    global::ValidateWifiProvisioningToken((char*)request->getParam("token", true)->value().c_str());
+  bool bAllowed = global::CanClaimDevice() || (global::IsWifiProvisioningActive() && global::IsDeviceClaimed() && isAdminRequest(request));
+  bool bStored = false;
+
+  if (!bTokenValid || !bAllowed) {
+    sendForbidden(request);
+    return;
+  }
+  if (request->hasParam("newkey", true)) {
+    bStored = global::SetClaimKey(request->getParam("newkey", true)->value().c_str(), true);
+  }
+
+  AsyncResponseStream *response = request->beginResponseStream(APP_JSON);
+  ADD_CORS_HEADER(response);
+  response->printf_P(PSTR("{\n\t\"success\": \"%d\",\n\t\"claimed\": \"%d\",\n\t\"message\": \"%s\"\n}\n"),
+    bStored, global::IsDeviceClaimed(), (bStored ? "Device claimed" : "ERROR, invalid key"));
+  request->send(response);
+}
+
 void handleProvisioningFinish(AsyncWebServerRequest *request) {
+  if (!isProvisioningAllowed(request)) {
+    sendForbidden(request);
+    return;
+  }
   _DBGPRINTF(PSTR("WebServer::handleProvisioningFinish: requested %s\n"), request->url().c_str());
 
   bool bTokenValid = false;

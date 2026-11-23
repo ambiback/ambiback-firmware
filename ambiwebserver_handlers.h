@@ -22,6 +22,11 @@
 /* Template processor for index/include pages (defined in ambiwebserver_pages.cpp) */
 String indexProcessor(const String& var);
 
+/* Device claim checks (defined in ambiwebserver_api.cpp) */
+bool isDeviceClaimedForWeb();
+bool isAdminRequest(AsyncWebServerRequest *request);
+bool requireAdmin(AsyncWebServerRequest *request);
+
 /* --- Common handlers --- */
 void notFound(AsyncWebServerRequest *request);
 void handleEmpty(AsyncWebServerRequest *request);
@@ -53,6 +58,7 @@ void handleAmbiBackWebManifest(AsyncWebServerRequest *request);
 void handleProvisioningStart(AsyncWebServerRequest *request);
 void handleProvisioningSubmit(AsyncWebServerRequest *request);
 void handleProvisioningFinish(AsyncWebServerRequest *request);
+void handleProvisioningClaim(AsyncWebServerRequest *request);
 #endif
 
 #if defined(ENABLE_CAM)

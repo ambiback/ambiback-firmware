@@ -9,7 +9,8 @@ It is the core of the [AmbiBack project](https://github.com/ambiback). [AmbiBack
 ## Status
 
 - Version in the source: 0.5.231.
-- **The firmware has not been compiled since the migration changes and has not been tested on real hardware.** Treat the build steps below as untested.
+- Eight of the 13 device types compile with the customized ESP32 core 2.0.0 used for earlier releases. That core is not published yet. `ttgo`, `ttgotm`, `ttgojr`, `wroover` and `ttgopl` do not build yet, and the camera types exceed the app partition with the public core 3.3.7.
+- **The firmware has not been tested on real hardware since the migration.**
 - AmbiBack devices have not been on sale for around five years. This repository is for DIY use and further development, with no product support. More at [ambiback.de](https://www.ambiback.de/).
 
 ## Operating modes
@@ -47,7 +48,9 @@ These values can be overridden as compiler flags:
 
 ## Security
 
-The generated access point password is derived from the device's MAC address. A custom seed is not full protection: anyone who knows one password from a build can calculate the others. The device web interface and API have no login. Set your own access point password and run devices only on a trusted network.
+Devices with an access point open their setup window only when no Wi-Fi is configured, or after a physical request: hold the button for 4 to 7 seconds, or switch the power on three times within a few seconds each. AmbiBack Manager then pairs with the device and stores a device key. After pairing, Wi-Fi setup, access point and debug settings, reboot, WPS and firmware updates require this key.
+
+Remaining limits: the first setup is not protected against someone in radio range who pairs first. The generated access point password is still derived from the MAC address, a custom seed is not full protection, and traffic is unencrypted. LED and mode control stay open on the local network, and device types without an access point have no pairing. Run devices only on a trusted network.
 
 ## Trademarks
 

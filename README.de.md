@@ -9,7 +9,8 @@ Sie ist der Kern des [AmbiBack-Projekts](https://github.com/ambiback). [AmbiBack
 ## Status
 
 - Version im Quellcode: 0.5.231.
-- **Die Firmware wurde seit den Migrationsänderungen nicht kompiliert und nicht auf echter Hardware getestet.** Die folgenden Build-Schritte gelten daher als ungeprüft.
+- Acht der 13 Gerätetypen bauen mit dem angepassten ESP32-Core 2.0.0, der für frühere Releases verwendet wurde. Dieser Core ist noch nicht veröffentlicht. `ttgo`, `ttgotm`, `ttgojr`, `wroover` und `ttgopl` bauen noch nicht, und die Kamera-Typen überschreiten mit dem öffentlichen Core 3.3.7 die App-Partition.
+- **Die Firmware wurde seit der Migration nicht auf echter Hardware getestet.**
 - AmbiBack-Geräte werden seit rund fünf Jahren nicht mehr verkauft. Dieses Repository dient dem Eigenbau und der Weiterentwicklung, ohne Produktsupport. Mehr auf [ambiback.de](https://www.ambiback.de/).
 
 ## Betriebsarten
@@ -47,7 +48,9 @@ Diese Werte lassen sich als Compiler-Flag überschreiben:
 
 ## Sicherheit
 
-Das erzeugte Access-Point-Passwort wird aus der MAC-Adresse des Geräts abgeleitet. Ein eigener Startwert ist kein vollwertiger Schutz: Wer ein Passwort eines Builds kennt, kann die übrigen berechnen. Die Weboberfläche und die API des Geräts haben keine Anmeldung. Setze ein eigenes Access-Point-Passwort und betreibe die Geräte nur in einem vertrauenswürdigen Netz.
+Geräte mit Access Point öffnen ihr Einrichtungsfenster nur, wenn noch kein WLAN eingerichtet ist, oder nach einer Anforderung direkt am Gerät: die Taste 4 bis 7 Sekunden halten oder den Strom dreimal im Abstand weniger Sekunden einschalten. Der AmbiBack Manager koppelt sich dann mit dem Gerät und speichert einen Geräteschlüssel. Nach der Kopplung brauchen WLAN-Einrichtung, Access-Point- und Debug-Einstellungen, Neustart, WPS und Firmware-Updates diesen Schlüssel.
+
+Verbleibende Grenzen: Die Ersteinrichtung ist nicht dagegen geschützt, dass jemand in Funkreichweite sich zuerst koppelt. Das erzeugte Access-Point-Passwort wird weiter aus der MAC-Adresse abgeleitet, ein eigener Startwert ist kein vollwertiger Schutz, und die Übertragung ist unverschlüsselt. LED- und Modussteuerung bleiben im lokalen Netz offen, und Gerätetypen ohne Access Point haben keine Kopplung. Betreibe die Geräte nur in einem vertrauenswürdigen Netz.
 
 ## Marken
 

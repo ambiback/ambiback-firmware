@@ -468,6 +468,7 @@ void AmbiWebServer::InitServer() {
   pWebServer->on(PSTR("/provisioning/start"), HTTP_GET, &handleProvisioningStart);
   pWebServer->on(PSTR("/provisioning/submit"), HTTP_POST, &handleProvisioningSubmit);
   pWebServer->on(PSTR("/provisioning/finish"), HTTP_POST, &handleProvisioningFinish);
+  pWebServer->on(PSTR("/provisioning/claim"), HTTP_POST, &handleProvisioningClaim);
 # endif
 
   // Static ACTIONs
@@ -667,7 +668,7 @@ void AmbiWebServer::InitServer() {
   /* Handling uploading firmware file */
   pWebServer->on(PSTR("/update"), HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(200, TEXT_HTML, PSTR( "<html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head><body style=\"padding:5px;\"><h2>Firmware Update</h2>"
-                                        "<form method=\"POST\" action=\"/update\" enctype=\"multipart/form-data\"><input type=\"file\" name=\"update\"><input type=\"submit\" value=\"Update\"></form>"
+                                        "<form method=\"POST\" action=\"/update\" enctype=\"multipart/form-data\" onsubmit=\"var k=document.getElementById('k').value;if(k)this.action='/update?claimkey='+encodeURIComponent(k)\"><input id=\"k\" type=\"password\" placeholder=\"Device key (if claimed)\" autocomplete=\"off\"><br><input type=\"file\" name=\"update\"><input type=\"submit\" value=\"Update\"></form>"
                                         "<br><center><a href=\"/\"><b>return to index</b></a></center></body></html>"));
   });
   

@@ -20,10 +20,13 @@
     <section>
       <h2>Quick Actions</h2>
       <div class="grid">
-        <a role="button" href="/startwps?forreal=1">Start WPS</a>
-        <a role="button" href="/reboot?forreal=1" class="secondary">Reboot</a>
+        <a role="button" data-admin href="/startwps?forreal=1">Start WPS</a>
+        <a role="button" data-admin href="/reboot?forreal=1" class="secondary">Reboot</a>
         <a role="button" href="/update" class="contrast">OTA Update</a>
       </div>
+      <label>Device key (only for claimed devices)
+        <input id="claimkey" type="password" autocomplete="off">
+      </label>
     </section>
     <section>
       <h2>LED Mode</h2>
@@ -48,6 +51,18 @@
       var modeResult = document.getElementById("mode-result");
       var modeButtonsEl = document.getElementById("mode-buttons");
       var modeLoadingEl = document.getElementById("mode-loading");
+      var claimKeyEl = document.getElementById("claimkey");
+
+      try { claimKeyEl.value = sessionStorage.getItem("ambiback.claimkey") || ""; } catch (e) {}
+      claimKeyEl.addEventListener("change", function () {
+        try { sessionStorage.setItem("ambiback.claimkey", claimKeyEl.value); } catch (e) {}
+      });
+      document.querySelectorAll("[data-admin]").forEach(function (link) {
+        var base = link.getAttribute("href");
+        link.addEventListener("click", function () {
+          link.href = base + (claimKeyEl.value ? "&claimkey=" + encodeURIComponent(claimKeyEl.value) : "");
+        });
+      });
 
       var allModes = [
         { value: 0, label: "Off" },
