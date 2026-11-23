@@ -27,6 +27,21 @@ Das Zielgerät wird in `globalincludes.h` über `ESP32_DEVICE_TYPE` gewählt. Pr
 
 `ESP32_BRIDGE`, `ESP32_NAKED`, `ESP32_WROOVER_CAM`, `ESP32_TTGO_CAM`, `ESP32_TTGO_CAM_MIC`, `ESP32_TTGO_CAM_JOURNAL`, `ESP32_TTGO_CAM_PLUS`, `ESP32_M5ST_CAM`, `ESP32_M5ST_CAM_X`, `ESP32_M5ST_ATOMLITE`, `ESP32_M5ST_ATOMMATRIX`, `ESP32_AMBIBACK_LEDV1`, `ESP32_M5ST_CAM_TIMER_X`
 
+## Bauteile
+
+Diese Teile passen zu den Firmware-Zielen. Mit dem aktuellen Firmware-Stand sind sie noch nicht getestet.
+
+- [M5Stack Atom Lite](https://www.amazon.de/dp/B0CTGKJPRW?tag=ambiback-21): LED-Controller, Ziel `ESP32_M5ST_ATOMLITE`, LED-Daten an GPIO 26. Der AtomS3 Lite wird nicht unterstützt.
+- M5Stack Timer Camera X: Kamera, Ziel `ESP32_M5ST_CAM_TIMER_X`
+- [BTF-LIGHTING WS2812B, 5 m, 60 LEDs/m](https://www.amazon.de/dp/B01CDTEJBG?tag=ambiback-21)
+- [LEICKE Netzteil 5 V, 10 A](https://www.amazon.de/dp/B07YVBHH6K?tag=ambiback-21)
+- [WAGO-Klemmen 221-415](https://www.amazon.de/dp/B078XL56P7?tag=ambiback-21)
+- [Seeed Grove-Kabel, 4-polig](https://www.amazon.de/dp/B01CNZ9RJO?tag=ambiback-21)
+
+Die vollständige Liste steht auf der [AmbiBack-Teileseite](https://www.ambiback.de/selbstbau/teile/). Platine und 3D-Druckdaten gibt es bei den [Baudaten](https://www.ambiback.de/selbstbau/druckdaten/).
+
+*Die Amazon-Links sind Partnerlinks. Als Amazon-Partner verdiene ich an qualifizierten Verkäufen.*
+
 ## Bauen
 
 Voraussetzungen sind die Arduino IDE oder `arduino-cli` mit ESP32-Board-Unterstützung sowie Node.js und Python für die Web-Oberfläche. Als externe Bibliotheken werden unter anderem AsyncTCP, ESPAsyncWebServer, FastLED und IRremoteESP8266 verwendet.
