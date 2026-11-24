@@ -14,6 +14,18 @@
 # include "camprocessor.h"
 #endif
 
+/* Parse one hex digit (0-9, A-F, a-f). Invalid characters yield 0. */
+static byte hexNibble(char c) {
+  if (c >= '0' && c <= '9') return (byte)(c - '0');
+  if (c >= 'A' && c <= 'F') return (byte)(c - 'A' + 10);
+  if (c >= 'a' && c <= 'f') return (byte)(c - 'a' + 10);
+  return 0;
+}
+/* Parse the two hex digits at position idx of str into one byte. */
+static byte hexByteAt(const String &str, unsigned int idx) {
+  return (byte)((hexNibble(str.charAt(idx)) << 4) | hexNibble(str.charAt(idx + 1)));
+}
+
 void handleSetColorMode(AsyncWebServerRequest *request) {
   String strResult; 
   String strMode;
@@ -58,14 +70,10 @@ void handleSetColor(AsyncWebServerRequest *request) {
         }
 
         /* Get Color Codes */  
-        byte bColorWhite = (0xF *((strColor.charAt(0) < '9') ? strColor.charAt(0) - '0' : strColor.charAt(0) - '7')) + 
-                                (((strColor.charAt(1) < '9') ? strColor.charAt(1) - '0' : strColor.charAt(1) - '7'));
-        byte bColorRed   = (0xF *((strColor.charAt(2) < '9') ? strColor.charAt(2) - '0' : strColor.charAt(2) - '7')) + 
-                                (((strColor.charAt(3) < '9') ? strColor.charAt(3) - '0' : strColor.charAt(3) - '7'));
-        byte bColorGreen = (0xF *((strColor.charAt(4) < '9') ? strColor.charAt(4) - '0' : strColor.charAt(4) - '7')) + 
-                                (((strColor.charAt(5) < '9') ? strColor.charAt(5) - '0' : strColor.charAt(5) - '7'));
-        byte bColorBlue  = (0xF *((strColor.charAt(6) < '9') ? strColor.charAt(6) - '0' : strColor.charAt(6) - '7')) + 
-                                (((strColor.charAt(7) < '9') ? strColor.charAt(7) - '0' : strColor.charAt(7) - '7'));
+        byte bColorWhite = hexByteAt(strColor, 0);
+        byte bColorRed   = hexByteAt(strColor, 2);
+        byte bColorGreen = hexByteAt(strColor, 4);
+        byte bColorBlue  = hexByteAt(strColor, 6);
                             
         if (global::m_pLedHelper != NULL) {
           /* Set LED to AMBIENT */
@@ -110,14 +118,10 @@ void handleSetAction(AsyncWebServerRequest *request) {
             }
     
             /* Get Color Codes */  
-            byte bColorWhite = (0xF *((strColors.charAt(0) < '9') ? strColors.charAt(0) - '0' : strColors.charAt(0) - '7')) + 
-                                    (((strColors.charAt(1) < '9') ? strColors.charAt(1) - '0' : strColors.charAt(1) - '7'));
-            byte bColorRed   = (0xF *((strColors.charAt(2) < '9') ? strColors.charAt(2) - '0' : strColors.charAt(2) - '7')) + 
-                                    (((strColors.charAt(3) < '9') ? strColors.charAt(3) - '0' : strColors.charAt(3) - '7'));
-            byte bColorGreen = (0xF *((strColors.charAt(4) < '9') ? strColors.charAt(4) - '0' : strColors.charAt(4) - '7')) + 
-                                    (((strColors.charAt(5) < '9') ? strColors.charAt(5) - '0' : strColors.charAt(5) - '7'));
-            byte bColorBlue  = (0xF *((strColors.charAt(6) < '9') ? strColors.charAt(6) - '0' : strColors.charAt(6) - '7')) + 
-                                    (((strColors.charAt(7) < '9') ? strColors.charAt(7) - '0' : strColors.charAt(7) - '7'));
+            byte bColorWhite = hexByteAt(strColors, 0);
+            byte bColorRed   = hexByteAt(strColors, 2);
+            byte bColorGreen = hexByteAt(strColors, 4);
+            byte bColorBlue  = hexByteAt(strColors, 6);
                                 
             if (global::m_pLedHelper != NULL) {
               /* Set LED to AMBIENT */
@@ -150,14 +154,10 @@ void handleSetAction(AsyncWebServerRequest *request) {
             * Byte3: Reserved
             * Byte4: Reserved
             */
-            byte bLeds =  (0xF *((strColors.charAt(0) < '9') ? strColors.charAt(0) - '0' : strColors.charAt(0) - '7')) + 
-                          (     ((strColors.charAt(1) < '9') ? strColors.charAt(1) - '0' : strColors.charAt(1) - '7'));
-            byte bByte2=  (0xF *((strColors.charAt(2) < '9') ? strColors.charAt(2) - '0' : strColors.charAt(2) - '7')) + 
-                          (     ((strColors.charAt(3) < '9') ? strColors.charAt(3) - '0' : strColors.charAt(3) - '7'));
-            byte bByte3=  (0xF *((strColors.charAt(4) < '9') ? strColors.charAt(4) - '0' : strColors.charAt(4) - '7')) + 
-                          (     ((strColors.charAt(5) < '9') ? strColors.charAt(5) - '0' : strColors.charAt(5) - '7'));
-            byte bByte4=  (0xF *((strColors.charAt(6) < '9') ? strColors.charAt(6) - '0' : strColors.charAt(6) - '7')) + 
-                          (     ((strColors.charAt(7) < '9') ? strColors.charAt(7) - '0' : strColors.charAt(7) - '7'));
+            byte bLeds =  hexByteAt(strColors, 0);
+            byte bByte2=  hexByteAt(strColors, 2);
+            byte bByte3=  hexByteAt(strColors, 4);
+            byte bByte4=  hexByteAt(strColors, 6);
     
             /* Set LED to VIDEO */
             global::m_pLedHelper->SetChangeLedMode(LED_MODE_VIDEO); 
@@ -168,14 +168,10 @@ void handleSetAction(AsyncWebServerRequest *request) {
             int iColorIndex = 0; 
             for(int i=8; i < strColors.length(); i+=8) {
               /* Get Color Codes */  
-              byte bColorWhite = (0xF *((strColors.charAt(i+0) < '9') ? strColors.charAt(i+0) - '0' : strColors.charAt(i+0) - '7')) + 
-                                      (((strColors.charAt(i+1) < '9') ? strColors.charAt(i+1) - '0' : strColors.charAt(i+1) - '7'));
-              byte bColorRed   = (0xF *((strColors.charAt(i+2) < '9') ? strColors.charAt(i+2) - '0' : strColors.charAt(i+2) - '7')) + 
-                                      (((strColors.charAt(i+3) < '9') ? strColors.charAt(i+3) - '0' : strColors.charAt(i+3) - '7'));
-              byte bColorGreen = (0xF *((strColors.charAt(i+4) < '9') ? strColors.charAt(i+4) - '0' : strColors.charAt(i+4) - '7')) + 
-                                      (((strColors.charAt(i+5) < '9') ? strColors.charAt(i+5) - '0' : strColors.charAt(i+5) - '7'));
-              byte bColorBlue  = (0xF *((strColors.charAt(i+6) < '9') ? strColors.charAt(i+6) - '0' : strColors.charAt(i+6) - '7')) + 
-                                      (((strColors.charAt(i+7) < '9') ? strColors.charAt(i+7) - '0' : strColors.charAt(i+7) - '7'));
+              byte bColorWhite = hexByteAt(strColors, i+0);
+              byte bColorRed   = hexByteAt(strColors, i+2);
+              byte bColorGreen = hexByteAt(strColors, i+4);
+              byte bColorBlue  = hexByteAt(strColors, i+6);
     
               /* Set Color LED Code */
               global::m_pLedHelper->SetLedColorByIdx(iColorIndex, bColorWhite, bColorRed, bColorGreen, bColorBlue); 
