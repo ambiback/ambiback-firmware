@@ -34,7 +34,7 @@ AMIBACK_BUILD_PATH="D:/path/to/build/_build" ./decode_backtrace.sh < crashdump.t
 **PowerShell:**
 ```powershell
 .\decode_backtrace.ps1 -Elf "D:\path\to\elf.elf" -CrashFile crashdump.txt
-.\decode_backtrace.ps1 -BuildPath "D:\!cvsroot\_Misc\AmbiBack.USBFlasher\build\_build"
+.\decode_backtrace.ps1 -BuildPath "C:\AmbiBack\Flasher\build\_build"
 ```
 
 ### Configuration
@@ -42,7 +42,7 @@ AMIBACK_BUILD_PATH="D:/path/to/build/_build" ./decode_backtrace.sh < crashdump.t
 Copy `decode_backtrace.conf.example` to `decode_backtrace.conf` and set your default build path:
 
 ```
-AMIBACK_BUILD_PATH=D:\!cvsroot\_Misc\AmbiBack.USBFlasher\build\_build
+AMIBACK_BUILD_PATH=C:\AmbiBack\Flasher\build\_build
 ```
 
 Or set the `AMIBACK_BUILD_PATH` environment variable.

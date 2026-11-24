@@ -3,7 +3,7 @@
 # Usage:
 #   .\decode_backtrace.ps1 -Elf "D:\path\to\AmbiBack.Controller.ino.elf" -CrashFile crashdump.txt
 #   .\decode_backtrace.ps1 -Elf "D:\path\to\elf.elf" 0x4009165d 0x4008ff4a 0x4008dbe0
-#   .\decode_backtrace.ps1 -BuildPath "D:\!cvsroot\_Misc\AmbiBack.USBFlasher\build\_build" (reads stdin)
+#   .\decode_backtrace.ps1 -BuildPath "C:\AmbiBack\Flasher\build\_build" (reads stdin)
 #   $env:AMIBACK_BUILD_PATH="D:\path"; .\decode_backtrace.ps1 (reads stdin)
 
 param(

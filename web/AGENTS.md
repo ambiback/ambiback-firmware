@@ -24,10 +24,7 @@ The AmbiBack Controller web interface is embedded directly into the firmware as 
   - HTML minifier (port 8041)
 
 ### Service Locations
-The minification services are located at:
-- `/mnt/d/!cvsroot/_Misc/cssminifier.com/runscreen.sh`
-- `/mnt/d/!cvsroot/_Misc/html-minifier.com/runscreen.sh`
-- `/mnt/d/!cvsroot/_Misc/javascript-minifier.com/runscreen.sh`
+The minification services and `runminiservers.sh` are not part of this repository. Provide your own services on the ports above.
 
 ## Step-by-Step Build Process
 
@@ -45,7 +42,7 @@ The minification services are located at:
 
 **Usage** (from WSL):
 ```bash
-cd /mnt/d/!cvsroot/_Misc/AmbiBack.Controller/web
+cd web   # from the repository root
 bash runminiservers.sh
 ```
 
@@ -63,7 +60,7 @@ bash runminiservers.sh
 
 **Usage** (from WSL):
 ```bash
-cd /mnt/d/!cvsroot/_Misc/AmbiBack.Controller/web
+cd web   # from the repository root
 bash convert.sh
 ```
 
