@@ -41,7 +41,6 @@ extern "C" int rom_phy_get_vdd33();
 
 #if defined(CONFIG_BT_ENABLED)
 # include "esp_bt.h"
-# include "esp_bt_main.h"
 # if defined(DISABLE_BLUETOOTH)
 # endif
 #endif
@@ -296,12 +295,6 @@ void setup() {
   if (global::GetAmbibackRelayMode() != RELAY_BT) {
 #   endif
     _DBGPRINTF(PSTR("setup: FreeMem=%dKB before Bluetooth DISABLE Status=%d\n"), heap_caps_get_free_size(MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL) / 1024, esp_bt_controller_get_status());
-#   if !defined(ARDUINO_ESP32_RELEASE_2_0_0)
-    ret = esp_bluedroid_disable();              if (ret != ESP_OK) { _DBGPRINTF(PSTR("setup: Bluetooth esp_bluedroid_disable ESP_BT_MODE_BLE failed: %s\n"), esp_err_to_name(ret)); } 
-    ret = esp_bluedroid_deinit();               if (ret != ESP_OK) { _DBGPRINTF(PSTR("setup: Bluetooth esp_bluedroid_deinit ESP_BT_MODE_BLE failed: %s\n"), esp_err_to_name(ret)); } 
-    ret = esp_bt_controller_disable();          if (ret != ESP_OK) { _DBGPRINTF(PSTR("setup: Bluetooth esp_bt_controller_disable ESP_BT_MODE_BLE failed: %s\n"), esp_err_to_name(ret)); } 
-    ret = esp_bt_controller_deinit();           if (ret != ESP_OK) { _DBGPRINTF(PSTR("setup: Bluetooth esp_bt_controller_deinit ESP_BT_MODE_BLE failed: %s\n"), esp_err_to_name(ret)); } 
-#   endif
     ret = esp_bt_mem_release(ESP_BT_MODE_BTDM); if (ret != ESP_OK) { _DBGPRINTF(PSTR("setup: Bluetooth esp_bt_mem_release ESP_BT_MODE_BTDM failed: %s\n"), esp_err_to_name(ret)); } 
     ret = esp_bt_mem_release(ESP_BT_MODE_BLE); if (ret != ESP_OK) { _DBGPRINTF(PSTR("setup: Bluetooth esp_bt_mem_release ESP_BT_MODE_BLE failed: %s\n"), esp_err_to_name(ret)); } 
     _DBGPRINTF(PSTR("setup: FreeMem=%dKB after Bluetooth DISABLE\n"), heap_caps_get_free_size(MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL) / 1024);
