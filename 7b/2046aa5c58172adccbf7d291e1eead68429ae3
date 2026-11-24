@@ -1,0 +1,225 @@
+.gitattributes
+  s_ed4f085c6942da::t_92d0a3484d2a49 1-2
+.gitignore
+  s_f979a138338d89::t_b2124c7f645771 1-7
+AGENTS.md
+  s_ed4f085c6942da::t_2da4304e88d6ed 1-587
+AmbiBack.Controller.ino
+  s_ed4f085c6942da::t_6ea4b25f96efd9 1-1124
+LICENSE
+  s_ed4f085c6942da::t_6d0cf36fa32cbf 1-675
+ambiHTTPUpdate.cpp
+  s_ed4f085c6942da::t_80fea19966a500 1-451
+ambiHTTPUpdate.h
+  s_ed4f085c6942da::t_2e763fa6ece818 1-139
+ambiwebserver.cpp
+  s_ed4f085c6942da::t_c27ebf5aa35f38 1-1723
+ambiwebserver.h
+  s_ed4f085c6942da::t_0fef93ed4dded6 1-60
+ambiwebserver_api.cpp
+  s_ed4f085c6942da::t_d2a6245383a960 1-1964
+ambiwebserver_handlers.h
+  s_ed4f085c6942da::t_54f912e0d48928 1-83
+ambiwebserver_html.h
+  s_ed4f085c6942da::t_cbf9e91b8ad39b 1-11
+ambiwebserver_pages.cpp
+  s_ed4f085c6942da::t_e302521133c7f6 1-802
+build-web.bat
+  s_ed4f085c6942da::t_7317f6135c41a7 1-14
+build-web.sh
+  s_ed4f085c6942da::t_77338461a6c400 1-11
+camprocessor.cpp
+  s_ed4f085c6942da::t_a2d24b5141d9f2 1-1398
+camprocessor.h
+  s_ed4f085c6942da::t_220326e9195803 1-271
+camtask.h
+  s_ed4f085c6942da::t_fed59d5ae94e74 1-11
+debughelper.cpp
+  s_ed4f085c6942da::t_b4c837f71a0283 1-234
+debughelper.h
+  s_ed4f085c6942da::t_8d9ca5d92117ea 1-25
+dreamscreen.cpp
+  s_ed4f085c6942da::t_7185833ab345fb 1-741
+dreamscreen.h
+  s_ed4f085c6942da::t_314e803796b22d 1-98
+eepromhelper.cpp
+  s_ed4f085c6942da::t_cd72384d439e79 1-976
+eepromhelper.h
+  s_ed4f085c6942da::t_0bf10e4861d6d4 1-111
+global.cpp
+  s_ed4f085c6942da::t_074422fcbcb24c 1-2193
+global.h
+  s_ed4f085c6942da::t_7fe0357732b00e 1-1031
+global_oled.cpp
+  s_ed4f085c6942da::t_cebd66e75f3295 1-199
+global_presets.cpp
+  s_ed4f085c6942da::t_cf30bd626d5266 1-632
+global_relay.cpp
+  s_ed4f085c6942da::t_5398eae70481b4 1-356
+global_wifi.cpp
+  s_ed4f085c6942da::t_47eba4951e04f4 1-1201
+globaldefinesttgo.h
+  s_ed4f085c6942da::t_41510c3e0dbfd3 1-217
+globalincludes.h
+  s_ed4f085c6942da::t_0debc121b99543 1-889
+huehelper.cpp
+  s_ed4f085c6942da::t_3a9fc0b4fccafe 1-1660
+huehelper.h
+  s_ed4f085c6942da::t_d2f1ff4752e6af 1-200
+irhelper.cpp
+  s_ed4f085c6942da::t_6d6e5f1eb945b5 1-36
+irhelper.h
+  s_ed4f085c6942da::t_3d48e02fdca37b 1-34
+ledhelper.cpp
+  s_ed4f085c6942da::t_8a21968cd6f216 1-3093
+ledhelper.h
+  s_ed4f085c6942da::t_fd8d71aeec5697 1-335
+lib/esp32cam/LICENSE
+  s_ed4f085c6942da::t_1ca678d1016aa3 1-15
+lib/esp32cam/README.md
+  s_ed4f085c6942da::t_aed08b28246808 1-32
+lib/esp32cam/library.properties
+  s_ed4f085c6942da::t_fcba4182473f67 1-9
+lib/esp32cam/src/esp32cam-asyncweb.h
+  s_ed4f085c6942da::t_71958918fcaa6b 1-300
+lib/esp32cam/src/esp32cam.cpp
+  s_ed4f085c6942da::t_f46db0c51bb6fd 1-106
+lib/esp32cam/src/esp32cam.h
+  s_ed4f085c6942da::t_6b51587546285f 1-104
+lib/esp32cam/src/internal/config.cpp
+  s_ed4f085c6942da::t_af73c1039b1358 1-99
+lib/esp32cam/src/internal/config.hpp
+  s_ed4f085c6942da::t_14caac7c3d643c 1-63
+lib/esp32cam/src/internal/frame.cpp
+  s_ed4f085c6942da::t_70b030e9abf7ca 1-132
+lib/esp32cam/src/internal/frame.hpp
+  s_ed4f085c6942da::t_5d6d686fa2b297 1-110
+lib/esp32cam/src/internal/mjpeg.cpp
+  s_ed4f085c6942da::t_75554e4ab22eac 1-92
+lib/esp32cam/src/internal/mjpeg.hpp
+  s_ed4f085c6942da::t_06e4109a6cb8e8 1-116
+lib/esp32cam/src/internal/pins.hpp
+  s_ed4f085c6942da::t_d91bb90581780f 1-135
+lib/esp32cam/src/internal/resolution.cpp
+  s_ed4f085c6942da::t_a663c64c3d6554 1-75
+lib/esp32cam/src/internal/resolution.hpp
+  s_ed4f085c6942da::t_47a9be8fbc6690 1-145
+lib/esp32cam/src/internal/sensor_compat.cpp
+  s_ed4f085c6942da::t_61d85eab188622 1-63
+platform.local.txt
+  s_ed4f085c6942da::t_8ee9b391d7799a 1-34
+scripts/README.md
+  s_ed4f085c6942da::t_6a0b2ab993ced2 1-58
+scripts/decode_backtrace.conf.example
+  s_ed4f085c6942da::t_4e047748d0edc7 1-12
+scripts/decode_backtrace.ps1
+  s_ed4f085c6942da::t_4aac5858f28937 1-231
+scripts/decode_backtrace.sh
+  s_ed4f085c6942da::t_6d02b9e64dd845 1-326
+sectorgeometry.h
+  s_ed4f085c6942da::t_dfbbeca443df41 1-65
+serialhelper.cpp
+  s_ed4f085c6942da::t_70244bb880699d 1-492
+serialhelper.h
+  s_ed4f085c6942da::t_3d0a28132ecf5f 1-36
+syslog.cpp
+  s_ed4f085c6942da::t_c3616d8c0d4051 1-246
+syslog.h
+  s_ed4f085c6942da::t_58680d0fc000d9 1-134
+tcpserver.cpp
+  s_ed4f085c6942da::t_1329b46bcb6257 1-413
+tcpserver.h
+  s_ed4f085c6942da::t_e8e2e5b0591e64 1-52
+udpserver.cpp
+  s_ed4f085c6942da::t_28c889c10744b6 1-451
+udpserver.h
+  s_ed4f085c6942da::t_6eac62428cef49 1-40
+web/AGENTS.md
+  s_ed4f085c6942da::t_7098352265479e 1-346
+web/HTML/ambiback.webmanifest.json
+  s_ed4f085c6942da::t_160af786f8be26 1-16
+web/HTML/include_ambiback_script.js
+  s_ed4f085c6942da::t_2c542e33b775b0 1-496
+web/HTML/include_ambiback_script_camera.js
+  s_ed4f085c6942da::t_f0ce44733dca4a 1-993
+web/HTML/include_ambiback_script_dreamscreen.js
+  s_ed4f085c6942da::t_ed24844d3da240 1-253
+web/HTML/include_ambiback_script_hue.js
+  s_ed4f085c6942da::t_553e4d298e26d8 1-449
+web/HTML/include_ambiback_styles.css
+  s_ed4f085c6942da::t_6fece0ef1685d4 1-313
+web/HTML/include_ambiback_worker.js
+  s_ed4f085c6942da::t_9dc29140adc1e5 1-12
+web/HTML/include_ambient.html
+  s_ed4f085c6942da::t_0c3921f613ea1a 1-164
+web/HTML/include_camera.html
+  s_ed4f085c6942da::t_51b4f118c385a5 1-467
+web/HTML/include_dreamscreen.html
+  s_ed4f085c6942da::t_5044ced04fcfd2 1-46
+web/HTML/include_hue.html
+  s_ed4f085c6942da::t_38883c4b75c0a2 1-70
+web/HTML/include_jshue.js
+  s_ed4f085c6942da::t_f92b938ce0dbd3 1-683
+web/HTML/index.html
+  s_ed4f085c6942da::t_237310edee288c 1-1204
+web/HTML/jquery_min.js
+  s_ed4f085c6942da::t_690f06f3091c49 1-6
+web/HTML/jquery_mobile_min.css
+  s_ed4f085c6942da::t_16d0df41bd1c99 1-3
+web/HTML/jquery_mobile_min.js
+  s_ed4f085c6942da::t_1735d9d1822a4b 1-10
+web/HTML/jquery_ui.css
+  s_ed4f085c6942da::t_dd01fbcf26d9e6 1-1312
+web/HTML/jquery_ui_draggable.js
+  s_ed4f085c6942da::t_16028a663e2b54 1-2163
+web/HTML/jquery_ui_touch_punch_min.js
+  s_ed4f085c6942da::t_ff70744847f4e7 1-11
+web/HTML_MIN/index.html
+  s_ed4f085c6942da::t_5020a66934e0aa 1-151
+web/convert.py
+  s_ed4f085c6942da::t_705172c96e4119 1-340
+web/convert.sh
+  s_ed4f085c6942da::t_d3fab05b89d03f 1-6
+web/jquery_ui_draggable.js
+  s_ed4f085c6942da::t_e030c35afeab42 1-2163
+web/jquery_ui_min.js
+  s_ed4f085c6942da::t_6235c3b16480b8 1-12
+web/jquery_ui_touch_punch_min.js
+  s_ed4f085c6942da::t_fff1b1c632f16d 1-11
+web/minify_css.js
+  s_ed4f085c6942da::t_05d610d50651f1 1-60
+web/minify_html.js
+  s_ed4f085c6942da::t_5fbaf4b7231e2d 1-50
+web/minify_js.js
+  s_ed4f085c6942da::t_fc70e579310926 1-60
+web/package.json
+  s_ed4f085c6942da::t_d70d2b6dacc9ce 1-7
+README.md
+  s_ed4f085c6942da::t_edb8e404239ede 1-45
+THIRD_PARTY_NOTICES.md
+  s_ed4f085c6942da::t_fd542be9511a9c 1-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7b2046aa5c58172adccbf7d291e1eead68429ae3",
+  "prompts": {},
+  "sessions": {
+    "s_ed4f085c6942da": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25338f00-8e49-4247-ba73-a2a50acc53dc",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Andre Lorbach <1675286+alorbach@users.noreply.github.com>"
+    },
+    "s_f979a138338d89": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1daad5b8-286e-4d5b-89e0-7a82ee3b6e21",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Andre Lorbach <1675286+alorbach@users.noreply.github.com>"
+    }
+  }
+}

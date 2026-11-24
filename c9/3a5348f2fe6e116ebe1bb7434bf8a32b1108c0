@@ -1,0 +1,25 @@
+scripts/README.md
+  s_ed4f085c6942da::t_f64519b5048930 37,45
+scripts/decode_backtrace.conf.example
+  s_ed4f085c6942da::t_5ead5ef1df011d 11
+scripts/decode_backtrace.ps1
+  s_ed4f085c6942da::t_99d9deb47837aa 6
+web/AGENTS.md
+  s_ed4f085c6942da::t_c9ea0f58687441 27,45,63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c93a5348f2fe6e116ebe1bb7434bf8a32b1108c0",
+  "prompts": {},
+  "sessions": {
+    "s_ed4f085c6942da": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25338f00-8e49-4247-ba73-a2a50acc53dc",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Andre Lorbach <1675286+alorbach@users.noreply.github.com>"
+    }
+  }
+}

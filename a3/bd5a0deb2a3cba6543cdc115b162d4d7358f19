@@ -1,0 +1,35 @@
+src/esp32cam/internal/frame.cpp
+  s_ed4f085c6942da::t_060628ab273433 85
+  s_ed4f085c6942da::t_90a537dc7ac7b5 62
+src/esp32cam/internal/sensor_compat.cpp
+  s_ed4f085c6942da::t_db37a2cf0d3d85 14-25
+  s_ed4f085c6942da::t_0190ed316f5da5 26,29,32,34-72,83,86
+src/esp32cam/esp32cam.h
+  s_ed4f085c6942da::t_0efc60c84a0f60 91
+src/esp32cam/README.md
+  s_ed4f085c6942da::t_a122975ac73869 1-31
+THIRD_PARTY_NOTICES.md
+  s_ed4f085c6942da::t_68bc2e9a1dde3c 7,16
+ambiwebserver.cpp
+  s_ed4f085c6942da::t_d9e98f866ce936 17
+camprocessor.cpp
+  s_ed4f085c6942da::t_e6250e25e54648 1037
+global.cpp
+  s_ed4f085c6942da::t_19943cd7008aad 52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a3bd5a0deb2a3cba6543cdc115b162d4d7358f19",
+  "prompts": {},
+  "sessions": {
+    "s_ed4f085c6942da": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25338f00-8e49-4247-ba73-a2a50acc53dc",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Andre Lorbach <1675286+alorbach@users.noreply.github.com>"
+    }
+  }
+}

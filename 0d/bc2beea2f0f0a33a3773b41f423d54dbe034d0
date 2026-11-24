@@ -1,0 +1,23 @@
+ambiwebserver.cpp
+  s_ed4f085c6942da::t_43fb249e7859c9 1-1722
+web/AGENTS.md
+  s_ed4f085c6942da::t_410cecb870eaa8 1-346
+web/HTML_MIN/index.html
+  s_ed4f085c6942da::t_4637310757a87a 1-151
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0dbc2beea2f0f0a33a3773b41f423d54dbe034d0",
+  "prompts": {},
+  "sessions": {
+    "s_ed4f085c6942da": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25338f00-8e49-4247-ba73-a2a50acc53dc",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Andre Lorbach <1675286+alorbach@users.noreply.github.com>"
+    }
+  }
+}

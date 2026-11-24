@@ -1,0 +1,21 @@
+global_wifi.cpp
+  s_4bdecb10a1284c::t_dac0a962f5d74d 10-21,852,855-857,894,930
+globalincludes.h
+  s_4bdecb10a1284c::t_57bec19ffa2e22 213,215,220
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "43e5f335b2308d096780c83502a457cca35fc2e4",
+  "prompts": {},
+  "sessions": {
+    "s_4bdecb10a1284c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a207de-5ea2-7ad1-97b8-fdc9aed20e93",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Andre Lorbach <1675286+alorbach@users.noreply.github.com>"
+    }
+  }
+}

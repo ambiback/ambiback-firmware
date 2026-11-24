@@ -1,0 +1,21 @@
+README.de.md
+  s_507b6a8544131b::t_e83df1a55eaf54 12
+README.md
+  s_507b6a8544131b::t_f9268f9e139efa 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c469683c22212affc9a9992322da0a4bd308cbc1",
+  "prompts": {},
+  "sessions": {
+    "s_507b6a8544131b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a20845-395d-7ac3-b4e3-ded61eae28ac",
+        "model": "gpt-6.1-terra"
+      },
+      "human_author": "Andre Lorbach <1675286+alorbach@users.noreply.github.com>"
+    }
+  }
+}

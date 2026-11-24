@@ -1,0 +1,21 @@
+README.de.md
+  s_4f23320266bb67::t_e23b6226002eb9 30-44
+README.md
+  s_4f23320266bb67::t_42cc74fc63b415 30-44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c5ea7b562d9bced36de3f4eab1edf05e6ecb584f",
+  "prompts": {},
+  "sessions": {
+    "s_4f23320266bb67": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "s_4f23320266bb67",
+        "model": "unknown"
+      },
+      "human_author": "Andre Lorbach <1675286+alorbach@users.noreply.github.com>"
+    }
+  }
+}

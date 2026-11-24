@@ -1,0 +1,21 @@
+README.de.md
+  s_bd161bfba247ba::t_e5192b99e44d92 41
+README.md
+  s_bd161bfba247ba::t_1b195e7fea64b7 41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9d7c15e1b788a56ee99bbdc50d7c0c69b7444820",
+  "prompts": {},
+  "sessions": {
+    "s_bd161bfba247ba": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a20975-04eb-7aa0-9aee-e1b0234be71d",
+        "model": "gpt-6-luna"
+      },
+      "human_author": "Andre Lorbach <1675286+alorbach@users.noreply.github.com>"
+    }
+  }
+}

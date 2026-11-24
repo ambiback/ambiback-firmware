@@ -1,0 +1,27 @@
+ambiwebserver_api.cpp
+  s_ce5e714e91147c::t_8e53de1541e0b1 12-15,1536-1538
+ambiwebserver_pages.cpp
+  s_ce5e714e91147c::t_10bf19f37cad9a 15-18,35-40
+globalincludes.h
+  s_ce5e714e91147c::t_dce092598ff544 26-35
+web/HTML/index.html
+  s_ce5e714e91147c::t_3d47cf5aaaa9a0 462-469
+web/HTML_MIN/index.html
+  s_ce5e714e91147c::t_a5fc094c8e2555 46-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1537793612151dce95ae2fc00a9739b71e26047b",
+  "prompts": {},
+  "sessions": {
+    "s_ce5e714e91147c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a20d98-c40d-72a1-ad7b-8ba461ac860e",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Andre Lorbach <1675286+alorbach@users.noreply.github.com>"
+    }
+  }
+}
