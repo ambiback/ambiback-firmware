@@ -49,7 +49,7 @@
 # endif
 
 #if defined(ENABLE_CAM)
-# include <esp32cam.h>
+# include "src/esp32cam/esp32cam.h"
   // Create Camera config
   esp32cam::Config m_CamCfg;
 #endif

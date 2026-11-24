@@ -14,7 +14,7 @@ TaskHandle_t handleTaskUpdate;
 
 #if defined(ENABLE_CAM)
 #   include "camprocessor.h"
-#   include <esp32cam.h>
+#   include "src/esp32cam/esp32cam.h"
 #   include <esp_camera.h>
 #   include "sensor.h"
 #   include "img_converters.h"

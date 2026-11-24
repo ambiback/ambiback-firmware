@@ -4,7 +4,7 @@ Die folgenden Komponenten liegen in diesem Repository und behalten ihre eigene L
 
 | Komponente | Version | Ort | Urheber | Lizenz |
 |---|---|---|---|---|
-| [esp32cam](https://github.com/yoursunny/esp32cam) (verändert) | 0.0.20240626 | `lib/esp32cam/` | Junxiao Shi | ISC, siehe `lib/esp32cam/LICENSE` |
+| [esp32cam](https://github.com/yoursunny/esp32cam) (verändert) | 0.0.20240626 | `src/esp32cam/` | Junxiao Shi, Anpassungen Andre Lorbach | ISC, siehe `src/esp32cam/LICENSE` |
 | [jsHue](https://github.com/blargoner/jshue) | 2.1.1 | `web/HTML/include_jshue.js` | John Peloquin und Mitwirkende | MIT |
 | [jQuery](https://jquery.org/license) | 1.10.2 | `web/HTML/jquery_min.js` | jQuery Foundation | MIT |
 | [jQuery Mobile](https://jquerymobile.com/) | 1.4.5 | `web/HTML/jquery_mobile_min.*` | jQuery Foundation | MIT |
@@ -13,4 +13,4 @@ Die folgenden Komponenten liegen in diesem Repository und behalten ihre eigene L
 
 ## Änderungen an esp32cam
 
-`lib/esp32cam/` basiert auf dem Upstream-Stand der Version 0.0.20240626 und wurde für AmbiBack angepasst. Die Originallizenz liegt unverändert bei. Die übrige Firmware steht unter GPL-3.0.
+`src/esp32cam/` basiert auf dem Upstream-Stand der Version 0.0.20240626 und wurde für AmbiBack angepasst. Antiflicker, PLL, Zoom und `taskYIELD` stammen aus dem früheren AmbiBack-Fork von esp32cam. Die Bibliothek ist Teil des Sketches, eine separat installierte esp32cam wird nicht gebraucht. Die Originallizenz liegt unverändert bei. Die übrige Firmware steht unter GPL-3.0.

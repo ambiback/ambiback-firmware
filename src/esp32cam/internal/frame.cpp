@@ -59,7 +59,7 @@ Frame::writeTo(AsyncClient& client, int timeout) {
     if (n == 0) return false;
     written += n;
     if (millis() - startTime > static_cast<unsigned long>(timeout)) return false;
-    yield();
+    taskYIELD();
   }
   return written == m_size;
 }
@@ -82,7 +82,7 @@ Frame::writeToImpl(Print& os, int timeout, Client* client) {
         (client != nullptr && !client->connected())) {
       return false;
     }
-    yield();
+    taskYIELD();
   }
   return true;
 }

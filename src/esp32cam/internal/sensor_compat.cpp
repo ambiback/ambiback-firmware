@@ -11,10 +11,18 @@ namespace esp32cam {
   return s->f(s, __VA_ARGS__) == 0; \
 } while(0)
 
+// Same argument mapping as the AmbiBack esp32cam fork: pre is passed as root.
 bool CameraClass::changePll(int mul, int pre, int pclk) {
   sensor_t* s = esp_camera_sensor_get();
   if (!s || !s->set_pll) return false;
-  return s->set_pll(s, 0, mul, 1, 0, pre, 0, 1, pclk) == 0;
+  return s->set_pll(s, false, mul, 1, pre, false, 0, true, pclk) == 0;
+}
+
+// Enables or disables COM7_ZOOM_EN (register 0x12, bit 0x04).
+bool CameraClass::changeZoom(int enable) {
+  sensor_t* s = esp_camera_sensor_get();
+  if (!s || !s->set_reg) return false;
+  return s->set_reg(s, 0x12, 0xFF, enable ? 0x04 : 0) == 0;
 }
 
 bool CameraClass::changeFrequence(int mhz) {
@@ -23,12 +31,45 @@ bool CameraClass::changeFrequence(int mhz) {
   return s->set_xclk(s, LEDC_TIMER_0, mhz * 1000000) == 0;
 }
 
+// Light frequency (anti-flicker) on OV3660, from the AmbiBack esp32cam fork.
+// Returns 0 for 60 Hz and 1 for 50 Hz.
 int CameraClass::getBandMode() {
   sensor_t* s = esp_camera_sensor_get();
-  return s ? s->status.denoise : 0;
+  if (!s || !s->get_reg) return 0;
+  return s->get_reg(s, 0x3C0C, 0x01);
 }
 
-bool CameraClass::changeBandMode(int mode) { CAM_SENSOR_CALL(set_denoise, mode); }
+// Mode 0 = automatic, 1 = manual 50 Hz, 2 = manual 60 Hz.
+bool CameraClass::changeBandMode(int mode) {
+  sensor_t* s = esp_camera_sensor_get();
+  if (!s || !s->set_reg) return false;
+  if (mode == 0) {
+    // Automatic detection: banding filter on, 0x3004[2] = 1.
+    return s->set_reg(s, 0x3a00, 0x32, 0x32) == 0 &&
+           s->set_reg(s, 0x3004, 0x04, 0x04) == 0 &&
+           s->set_reg(s, 0x3c00, 0x04, 0x00) == 0;
+  }
+  // Manual mode: switch automatic detection off first.
+  if (s->set_reg(s, 0x3a00, 0x32, 0x00) != 0 || s->set_reg(s, 0x3004, 0x04, 0x00) != 0) {
+    return false;
+  }
+  if (mode == 1) {
+    // 50 Hz
+    if (s->set_reg(s, 0x3c00, 0x04, 0x04) != 0) return false;
+    s->set_reg(s, 0x3a08, 0x00, 0x00); // band width
+    s->set_reg(s, 0x3a09, 0xeb, 0xeb); // band width
+    s->set_reg(s, 0x3a0e, 0x06, 0x06); // max band
+    s->set_reg(s, 0x3C0C, 0x01, 0x01);
+    return true;
+  }
+  // 60 Hz
+  if (s->set_reg(s, 0x3c00, 0x04, 0x00) != 0) return false;
+  s->set_reg(s, 0x3a0a, 0x00, 0x00); // band width
+  s->set_reg(s, 0x3a0b, 0xc4, 0xc4); // band width
+  s->set_reg(s, 0x3a0d, 0x08, 0x08); // max band
+  s->set_reg(s, 0x3C0C, 0x01, 0x00);
+  return true;
+}
 bool CameraClass::changeContrast(int level) { CAM_SENSOR_CALL(set_contrast, level); }
 bool CameraClass::changeBrightness(int level) { CAM_SENSOR_CALL(set_brightness, level); }
 bool CameraClass::changeSaturation(int level) { CAM_SENSOR_CALL(set_saturation, level); }

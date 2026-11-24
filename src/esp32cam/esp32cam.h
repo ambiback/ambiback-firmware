@@ -88,6 +88,7 @@ public:
   bool changRawGMA(int enable);
   bool changAutoExposurecontrol(int enable);
   bool changDcw(int enable);
+  bool changeZoom(int enable);
 };
 
 /** @brief ESP32 camera API. */

@@ -1034,7 +1034,7 @@ int* CamProcessor::camCalcCamPointAreas(int frameWidth, int frameHeight) {
    Implemented here so builds that do not compile camtask.cpp (e.g. USBFlasher sketch copy) still link. */
 #include "camtask.h"
 #include "ledhelper.h"
-#include <esp32cam.h>
+#include "src/esp32cam/esp32cam.h"
 #include "sensor.h"
 #include "freertos/task.h"
 #include <WiFi.h>
