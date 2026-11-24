@@ -9,7 +9,7 @@ It is the core of the [AmbiBack project](https://github.com/ambiback). [AmbiBack
 ## Status
 
 - Version in the source: 0.5.231.
-- Eight of the 13 device types compile with the customized ESP32 core 2.0.0 used for earlier releases. That core is not published yet. `ttgo`, `ttgotm`, `ttgojr`, `wroover` and `ttgopl` do not build yet. With the public core 3.3.7, the camera types `m5esp32`, `m5camx` and `m5camtx` do not build, and `m5camtx` exceeds the app partition.
+- All 13 device types compile with Arduino ESP32 core 3.3.6, the version used by [AmbiBack Flasher](https://github.com/ambiback/ambiback-flasher). Core 2.0.8 also builds all 13 types. Other core versions have not been tested.
 - **The firmware has not been tested on real hardware since the migration.**
 - AmbiBack devices have not been on sale for around five years. This repository is for DIY use and further development, with no product support. More at [ambiback.de](https://www.ambiback.de/).
 
