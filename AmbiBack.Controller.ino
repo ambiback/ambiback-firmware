@@ -450,14 +450,14 @@ beginLoop:
 #if defined(ENABLE_SSD1306)
   // Handle own Display Queue 
   if (global::oledProcessQueue()) {
-    timeSS1306Wait = millis();
+    global::g_timeSS1306Wait = millis();
   }
   // Reset TimeWait!
-  if (millis() > (timeSS1306Wait+5000))
-    timeSS1306Wait = 0; 
+  if (millis() > (global::g_timeSS1306Wait+5000))
+    global::g_timeSS1306Wait = 0; 
   
   // Handle UI Queue on idle
-  if (timeSS1306Wait == 0) {   
+  if (global::g_timeSS1306Wait == 0) {   
     ui.update(); 
   }
 #endif
