@@ -23,6 +23,16 @@
 #define AMBIBACK_BUILD 231
 #define AMBIBACK_VERSION "0.5.231"
 
+// Build information, shown in the web UI footer and in /getparamatersasjson.
+// The USB flasher sets AMBIBACK_BUILD_ID with a compiler flag (date, time and git commit).
+#ifndef AMBIBACK_BUILD_ID
+#define AMBIBACK_BUILD_ID "dev"
+#endif
+#define AMBIBACK_STRINGIFY2(x) #x
+#define AMBIBACK_STRINGIFY(x) AMBIBACK_STRINGIFY2(x)
+// Arduino-ESP32 core version, for example "3.3.6" (from core_version.h, included above)
+#define AMBIBACK_CORE_VERSION AMBIBACK_STRINGIFY(ARDUINO_ESP32_GIT_DESC)
+
 // Base URL for firmware updates. Override it with a compiler flag for your own update server.
 #ifndef AMBIBACK_FIRMWARE_BASE_URL
 #define AMBIBACK_FIRMWARE_BASE_URL "http://firmware.ambiback.com/firmware/esp32"

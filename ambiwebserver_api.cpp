@@ -9,6 +9,10 @@
 
 #include "esp_wifi.h"
 #include "esp_heap_caps.h"
+#include "esp_system.h"
+#if __has_include("esp_idf_version.h")
+# include "esp_idf_version.h"
+#endif
 
 #if defined(ENABLE_CAM)
 # include "camprocessor.h"
@@ -1529,6 +1533,9 @@ void handleGetParametersAsJson(AsyncWebServerRequest *request){
   response->printf_P(PSTR("{\n")); 
   response->printf_P(PSTR("\t\"devicetype\": \"%s\",\n"), AMBIBACK_NAME); 
   response->printf_P(PSTR("\t\"deviceversion\": \"%s\",\n"), AMBIBACK_VERSION);
+  response->printf_P(PSTR("\t\"coreversion\": \"%s\",\n"), AMBIBACK_CORE_VERSION);
+  response->printf_P(PSTR("\t\"idfversion\": \"%s\",\n"), esp_get_idf_version());
+  response->printf_P(PSTR("\t\"buildid\": \"%s\",\n"), AMBIBACK_BUILD_ID);
   response->printf_P(PSTR("\t\"firmwarebaseurl\": \"%s\",\n"), HTTP_BASE_URL); 
   response->printf_P(PSTR("\t\"devicename\": \"%s\",\n"), global::GetDeviceName()); 
   response->printf_P(PSTR("\t\"deviceid\": \"%s\",\n"), global::GetDeviceID());

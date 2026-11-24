@@ -12,6 +12,10 @@
 #include "esp_task_wdt.h"
 #include "esp_wifi.h"
 #include "esp_heap_caps.h"
+#include "esp_system.h"
+#if __has_include("esp_idf_version.h")
+# include "esp_idf_version.h"
+#endif
 
 #if defined(ENABLE_CAM)
 # include "camprocessor.h"
@@ -28,6 +32,12 @@ String indexProcessor(const String& var) {
     return F(AMBIBACK_VERSION);
   else if(var == "DT")
     return F(DEVICE_NAME);
+  else if(var == "AN")
+    return F(AMBIBACK_NAME);
+  else if(var == "FW")
+    return String(F("Arduino " AMBIBACK_CORE_VERSION " / IDF ")) + esp_get_idf_version();
+  else if(var == "BID")
+    return F(AMBIBACK_BUILD_ID);
   else if(var == "DID")
     return String(global::GetDeviceID());
   else if(var == "DMAC")
