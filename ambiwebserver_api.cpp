@@ -1743,6 +1743,7 @@ void handleGetStatusAsJson(AsyncWebServerRequest *request){
   response->printf_P(PSTR("\t\"hueenabled\": \"%d\",\n"), global::GetHueSupport()); 
   response->printf_P(PSTR("\t\"huefps\": \"%d\",\n"), global::m_pHueHelper->GetCurrentFps()); 
   response->printf_P(PSTR("\t\"huestatus\": \"%s\",\n"), (global::m_pHueHelper->GetHueDtlsPrepared() == true ? (global::m_pHueHelper->GetHueDtlsConnected() ? "connected" : "prepared") : "disconnected")); 
+  response->printf_P(PSTR("\t\"hueerror\": \"%s\",\n"), global::m_pHueHelper->GetHueLastError());
 #endif
 #if defined(ENABLE_DREAMSCREEN)
   response->printf_P(PSTR("\t\"dreamscreenstatus\": \"%s\",\n"), (global::m_pDreamScreen->GetConnected() == true ? "connected" : "disconnected") ); 

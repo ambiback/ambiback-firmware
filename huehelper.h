@@ -5,7 +5,7 @@
 #define MAX_HUE_URLSIZE 128
 #define MAX_HUE_MAXNAME 128
 #define MAX_HUE_PUTSIZE 256
-#define MAX_HUE_MAXLIGHTIDS 64
+#define MAX_HUE_MAXLIGHTIDS 96   // up to 10 quoted light IDs incl. separators (3-digit IDs need 70 chars)
 #define MAX_HUE_MAXID 32
 #define MAX_HUE_DEVICES 50  // Maximum number Hue Bridge Supports: https://huehomelighting.com/many-lights-can-1-hue-bridge-support/
 #define MAX_HUE_LEDS 12
@@ -35,6 +35,13 @@
 #define MAX_HUE_HTTP_RETRY_WAIT 1000    // ms how long to wait
 
 #define HUE_NOT_INITIALIZED -1
+#define HUE_GROUP_LOOKUP_FAILED -2      // Group list could not be read/parsed: never create a new group then
+
+// Entertainment group handling
+#define HUE_GROUP_NAME_MAX 32           // Hue bridge stores at most 32 characters of a group name
+#define MAX_HUE_OWN_GROUPS 20           // Hue bridge supports at most 20 entertainment areas
+#define HUE_GROUP_RETRY_FULL_MS 60000   // Wait before retrying when the bridge refused to create a group
+#define HUE_GROUP_EEPROM_KEY "HueGroupID"
 
 // Bridge/config buffer sizes (match global.h when ENABLE_HUE)
 #define HUE_STR_IP_MAX 65
@@ -113,6 +120,7 @@ public:
     void HueLightSetColor(int iDeviceID); 
     bool HueStartDtls(); 
     void HueStopDtls(); 
+    const char* GetHueLastError() const { return (m_pszHueLastError != NULL ? m_pszHueLastError : ""); }
     void HueInitHueLightStatesDtls(); 
 
     /* Bridge/config state and persistence (moved from global) */
@@ -192,6 +200,13 @@ private:
     byte m_bCurrentFramesCtr;     // Counter for current FPS
     byte m_bCurrentFpsSkip;       // Save Frame Skip FPS
     byte m_bCurrentFramesSkipCtr; // Counter for Skip FPS
+
+    // Entertainment group handling
+    const char* m_pszHueLastError;          // Last user relevant Hue error (static string), NULL if none
+    unsigned long m_tHueGroupRetryAfter;    // millis() deadline before group creation is retried, 0 = none
+    int HueCheckGroup(int iGroupID, const char* pszName, const char* pszLegacyName, bool* pbLegacy);
+    int HueFindOwnGroup(const char* pszName, const char* pszLegacyName, bool* pbLegacy);
+    void HueSaveGroupID(int iGroupID);
     
     
 };
