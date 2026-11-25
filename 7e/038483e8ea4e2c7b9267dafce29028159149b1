@@ -1,0 +1,29 @@
+build/make-symbols.py
+  s_d8c324551c803d::t_8f19221a7ba26b 1-102
+build/ci_build.py
+  s_d8c324551c803d::t_229d3ded38af2d 1-158
+build/make-manifest.py
+  s_d8c324551c803d::t_1cb3b358270ac5 1-69
+.github/workflows/release-builds.yml
+  s_d8c324551c803d::t_80028ed21f1ee3 1-148
+build/libraries.json
+  s_d8c324551c803d::t_d45176af15a41f 1-30
+build/devices.json
+  s_d8c324551c803d::t_d45176af15a41f 1-175
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7e038483e8ea4e2c7b9267dafce29028159149b1",
+  "prompts": {},
+  "sessions": {
+    "s_d8c324551c803d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ba3b8c4a-8957-4041-b044-40dfa20e570a",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Andre Lorbach <1675286+alorbach@users.noreply.github.com>"
+    }
+  }
+}
