@@ -1,6 +1,9 @@
 #include "globalincludes.h"
 #if defined(ENABLE_SERIAL_INPUT)
 # include "serialhelper.h"
+# if defined(ENABLE_IMPROV_SERIAL)
+#   include "improvserial.h"
+# endif
 # if defined(CONFIG_BT_ENABLED)
 #   if !defined(DISABLE_BLUETOOTH)
 #     include "BluetoothSerial.h"
@@ -44,6 +47,12 @@ void SerialHelper::checkSerial() {
       iByte = Serial.read();
       _DBGPRINTF_ULTRA(PSTR("SerialHelper:CheckSerial: Char 0x%02X\n"), (byte) iByte);
       
+#if defined(ENABLE_IMPROV_SERIAL)
+      // Improv packet in progress, or a byte outside a "%" command: Improv gets it
+      if (iByte >= 0 && (iByte != '%' || ImprovSerial::IsReceiving())) {
+        ImprovSerial::FeedByte((uint8_t) iByte);
+      } else
+#endif
       if (iByte == '%') {
         // terminate string first!
         szCmd[0] = '\0'; 
