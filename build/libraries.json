@@ -1,0 +1,30 @@
+{
+  "_comment": "Libraries at fixed tags, same as ambiback-flasher ToolchainInstaller.cs.",
+  "libraries": [
+    {
+      "name": "FastLED",
+      "repo": "https://github.com/FastLED/FastLED",
+      "tag": "3.10.3"
+    },
+    {
+      "name": "AsyncTCP",
+      "repo": "https://github.com/ESP32Async/AsyncTCP",
+      "tag": "v3.4.10"
+    },
+    {
+      "name": "ESPAsyncWebServer",
+      "repo": "https://github.com/ESP32Async/ESPAsyncWebServer",
+      "tag": "v3.9.5"
+    },
+    {
+      "name": "WiFiClientSecureUdp",
+      "repo": "https://github.com/alorbach/wificlientsecureudp",
+      "tag": "1.0.0"
+    },
+    {
+      "name": "ESP8266_and_ESP32_OLED_driver_for_SSD1306_displays",
+      "repo": "https://github.com/ThingPulse/esp8266-oled-ssd1306",
+      "tag": "4.6.2"
+    }
+  ]
+}
