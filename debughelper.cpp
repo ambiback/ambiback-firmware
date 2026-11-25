@@ -7,7 +7,7 @@
 
 #include "syslog.h"
 #if defined(_DEBUG) && defined(_DEBUG_UDP)
-#include "Syslog.h"
+#include "syslog.h"
 #endif
 
 static HTTPClient s_http;

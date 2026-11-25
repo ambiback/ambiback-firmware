@@ -1,0 +1,148 @@
+name: Release builds
+
+# Builds every AmbiBack device type with arduino-cli and packages the flash files
+# for browser and desktop flashers (see AI/WEB_FLASHER_PLAN.md, docs/serial-protocol.md).
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: "Channel written to manifest.json"
+        default: "dev"
+  pull_request:
+    paths:
+      - ".github/workflows/release-builds.yml"
+      - "build/**"
+      - "**.cpp"
+      - "**.h"
+      - "**.ino"
+      - "web/**"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-builds-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ARDUINO_CORE: "3.3.6"
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      devices: ${{ steps.list.outputs.devices }}
+      buildid: ${{ steps.id.outputs.buildid }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: list
+        run: echo "devices=$(python3 -c 'import json;print(json.dumps([d["id"] for d in json.load(open("build/devices.json"))["devices"]]))')" >> "$GITHUB_OUTPUT"
+      - id: id
+        # Identifier only: it is passed as a token and stringified by globalincludes.h
+        run: echo "buildid=ci$(date -u +%Y%m%d)_${GITHUB_SHA::7}_r${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: matrix
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        device: ${{ fromJson(needs.matrix.outputs.devices) }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - uses: arduino/setup-arduino-cli@v2
+
+      - name: Cache ESP32 core
+        uses: actions/cache@v4
+        with:
+          path: ~/.arduino15
+          key: arduino15-esp32-${{ env.ARDUINO_CORE }}-v1
+
+      - name: Install ESP32 core
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install "esp32:esp32@${ARDUINO_CORE}"
+
+      - name: Fetch libraries at fixed tags
+        run: |
+          mkdir -p "$RUNNER_TEMP/libraries"
+          python3 - <<'EOF'
+          import json, os, subprocess
+          dest = os.path.join(os.environ["RUNNER_TEMP"], "libraries")
+          for lib in json.load(open("build/libraries.json"))["libraries"]:
+              target = os.path.join(dest, lib["name"])
+              if not os.path.isdir(target):
+                  subprocess.run(["git", "clone", "--quiet", "--depth", "1", "--branch", lib["tag"], lib["repo"], target], check=True)
+          EOF
+
+      - name: Generate web UI headers
+        run: bash build-web.sh
+
+      - name: Build ${{ matrix.device }}
+        run: |
+          python3 build/ci_build.py \
+            --device "${{ matrix.device }}" \
+            --libraries "$RUNNER_TEMP/libraries" \
+            --work "$RUNNER_TEMP/work" \
+            --out dist --elf-out elf \
+            --build-id "${{ needs.matrix.outputs.buildid }}" \
+            --commit "${GITHUB_SHA::7}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: device-${{ matrix.device }}
+          path: dist/${{ matrix.device }}
+          retention-days: 3
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: elf-${{ matrix.device }}
+          path: elf/${{ matrix.device }}.elf
+          retention-days: 30
+
+  package:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/download-artifact@v5
+        with:
+          pattern: device-*
+          path: artifacts
+
+      - name: Assemble dist and manifest
+        id: pkg
+        run: |
+          mkdir -p dist
+          for d in artifacts/device-*; do cp -r "$d" "dist/${d#artifacts/device-}"; done
+          CHANNEL="stable"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then CHANNEL="${{ inputs.channel }}"; fi
+          if [ "${{ github.event_name }}" = "pull_request" ]; then CHANNEL="dev"; fi
+          python3 build/make-manifest.py --dist dist --channel "$CHANNEL" --date "$(date -u +%Y-%m-%d)"
+          VERSION=$(python3 -c 'import json;print(json.load(open("dist/manifest.json"))["version"])')
+          (cd dist && zip -qr "../ambiback-firmware-${VERSION}.zip" .)
+          echo "zip=ambiback-firmware-${VERSION}.zip" >> "$GITHUB_OUTPUT"
+          ls -la "ambiback-firmware-${VERSION}.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ambiback-firmware
+          path: ${{ steps.pkg.outputs.zip }}
+          retention-days: 30
+
+      - name: Attach to release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1 || gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --generate-notes
+          gh release upload "${GITHUB_REF_NAME}" "${{ steps.pkg.outputs.zip }}" --clobber

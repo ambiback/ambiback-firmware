@@ -22,6 +22,9 @@ extern "C" int rom_phy_get_vdd33();
 #include "udpserver.h"
 #if defined(ENABLE_SERIAL_INPUT)
 # include "serialhelper.h"
+#endif
+#if defined(ENABLE_IMPROV_SERIAL)
+# include "improvserial.h"
 #endif 
 // Main WebServer now!
 #include "ambiwebserver.h"
@@ -172,6 +175,9 @@ void setup() {
   Serial.end(); 
   Serial.begin(DEFAULT_SERIAL_RATE);
   Serial.setRxBufferSize(2048);
+
+  // Boot banner, always printed: browser tools read version, build and device from it
+  Serial.printf("\n[AmbiBack] version=%s build=%s device=%s\n", AMBIBACK_VERSION, AMBIBACK_BUILD_ID, AMBIBACK_DEVICE_DEFINE);
 
   // at the very first step, we init the WIFI Mode!
   global::HandleWifiMode();
@@ -433,6 +439,8 @@ beginLoop:
 
 #if defined(ENABLE_SERIAL_INPUT)
   serialHelper.checkSerial();
+#elif defined(ENABLE_IMPROV_SERIAL)
+  ImprovSerial::Poll();   /* No serial command parser in this build: Improv reads the port */
 #endif
 
   /* --- Check if new LED needs to be processed --- */
