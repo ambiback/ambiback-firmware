@@ -1,0 +1,23 @@
+huehelper.cpp
+  s_db70cde4a08699::t_fd3f35e26d51a8 111-112,562-563,695-828,832-833,837,839-844,846-861,863-872,874-876,921-938,961,966-1009,1085
+ambiwebserver_api.cpp
+  s_db70cde4a08699::t_c6f83218624644 1746
+huehelper.h
+  s_db70cde4a08699::t_eaf100bc87470b 8,38-44,123,203-209
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6dd84c4f4b8c81f1e24f60e8971cea0b1559cba2",
+  "prompts": {},
+  "sessions": {
+    "s_db70cde4a08699": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e5b2865a-3a5d-4f53-a74a-415dd41cd896",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Andre Lorbach <1675286+alorbach@users.noreply.github.com>"
+    }
+  }
+}
