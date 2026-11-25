@@ -2,7 +2,7 @@
 #define global_h
 
 // Needed for global pointer
-#include "LEDHelper.h"
+#include "ledhelper.h"
 #include "eepromhelper.h"
 #include "ambiwebserver.h"  // Include WebServer reference now!
 
@@ -237,7 +237,7 @@ static int FRAMESIZE_HEIGHT[12] = { 120, 160, 144, 176, 240, 296, 480, 600, 768,
 
 # ifdef _DEBUG_UDP
 #   include <WiFi.h>
-#   include "Syslog.h"
+#   include "syslog.h"
 # endif 
 #endif 
 

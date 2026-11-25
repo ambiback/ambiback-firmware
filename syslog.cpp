@@ -2,7 +2,7 @@
 #include <stdarg.h>
 #include <Arduino.h>
 
-#include "Syslog.h"
+#include "syslog.h"
 
 // Public Methods //////////////////////////////////////////////////////////////
 
