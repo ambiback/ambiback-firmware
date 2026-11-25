@@ -1,0 +1,23 @@
+syslog.cpp
+  s_d8c324551c803d::t_e3810d991999d1 5
+debughelper.cpp
+  s_d8c324551c803d::t_e3810d991999d1 10
+global.h
+  s_d8c324551c803d::t_e3810d991999d1 5,240
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6b726b7fca09b1f04c8fc4c95cd464da50cd9d87",
+  "prompts": {},
+  "sessions": {
+    "s_d8c324551c803d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ba3b8c4a-8957-4041-b044-40dfa20e570a",
+        "model": "unknown"
+      },
+      "human_author": "Andre Lorbach <1675286+alorbach@users.noreply.github.com>"
+    }
+  }
+}
