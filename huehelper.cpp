@@ -108,6 +108,8 @@ HueHelper::HueHelper(){
   memset(m_hue_device_var_light_zones, 0, MAX_HUE_DEVICES * MAX_HUE_LEDS * sizeof(byte));
 
   m_iHueEntertainmentGroupID = HUE_NOT_INITIALIZED; 
+  m_pszHueLastError = NULL;
+  m_tHueGroupRetryAfter = 0;
   // memset(m_szHueEntertainmentGroupID, 0, MAX_HUE_MAXNAME);
 
   // Init Pointers for HTTP Clients
@@ -557,6 +559,8 @@ String HueHelper::HueWebCommand(char* pszHueUpdateUrl, char* pszHuePutData, size
       iHttpCode = m_pHttp[0]->PUT( (uint8_t*) pszHuePutData, stPutLen);
     } else if (httpMethod == HTTP_POST) { 
       iHttpCode = m_pHttp[0]->POST( (uint8_t*) pszHuePutData, stPutLen);
+    } else if (httpMethod == HTTP_DELETE) { 
+      iHttpCode = m_pHttp[0]->sendRequest("DELETE");
     } else {
       global::errprintf_P(PSTR("HueHelper: HueWebCommand: INVALID HTTP Request Type %d\n"), httpMethod);
       return String();
@@ -688,53 +692,188 @@ void HueHelper::HueLightSetColor(int iDeviceID) {
     global::errprintf_P(PSTR("HueHelper: HueLightSetColor: Failed to set Color for Hue Light ID %d\n"), iDeviceID);
   }
 }
+// --- Entertainment group helpers
+// Hue truncates group names to HUE_GROUP_NAME_MAX characters, so compare only that many.
+// Older firmware named the group "AmbiBack Group <DeviceID>", current firmware "AmbiBack <DeviceID>".
+static bool hueIsOwnGroupName(const char* pszGroupName, const char* pszName, const char* pszLegacyName, bool* pbLegacy) {
+  if (pszGroupName == NULL) 
+    return false;
+  if (strncmp(pszGroupName, pszName, HUE_GROUP_NAME_MAX) == 0) {
+    if (pbLegacy != NULL) *pbLegacy = false;
+    return true;
+  }
+  if (strncmp(pszGroupName, pszLegacyName, HUE_GROUP_NAME_MAX) == 0) {
+    if (pbLegacy != NULL) *pbLegacy = true;
+    return true;
+  }
+  return false;
+}
+static bool hueIsOwnEntertainmentGroup(const cJSON* json_group, const char* pszName, const char* pszLegacyName, bool* pbLegacy) {
+  if (!cJSON_IsObject(json_group)) 
+    return false;
+  const cJSON* json_type = cJSON_GetObjectItemCaseSensitive(json_group, "type");
+  if (!cJSON_IsString(json_type) || json_type->valuestring == NULL || strcmp(json_type->valuestring, "Entertainment") != 0)
+    return false;
+  const cJSON* json_name = cJSON_GetObjectItemCaseSensitive(json_group, "name");
+  if (!cJSON_IsString(json_name)) 
+    return false;
+  return hueIsOwnGroupName(json_name->valuestring, pszName, pszLegacyName, pbLegacy);
+}
+// Hue errors come as [{"error":{"type":301,"address":"/groups","description":"..."}}]
+static int hueGetErrorType(const cJSON* json, const char** ppszDescription) {
+  if (ppszDescription != NULL) *ppszDescription = "";
+  if (!cJSON_IsArray(json)) 
+    return 0;
+  const cJSON* json_error = cJSON_GetObjectItemCaseSensitive(json->child, "error");
+  if (json_error == NULL) 
+    return 0;
+  const cJSON* json_desc = cJSON_GetObjectItemCaseSensitive(json_error, "description");
+  if (ppszDescription != NULL && cJSON_IsString(json_desc) && json_desc->valuestring != NULL) 
+    *ppszDescription = json_desc->valuestring;
+  const cJSON* json_errtype = cJSON_GetObjectItemCaseSensitive(json_error, "type");
+  return (cJSON_IsNumber(json_errtype) ? json_errtype->valueint : -1);
+}
+void HueHelper::HueSaveGroupID(int iGroupID) {
+  if (global::m_pEepromHelper->GetSettingInt(HUE_GROUP_EEPROM_KEY, HUE_NOT_INITIALIZED, false) != iGroupID) {
+    global::m_pEepromHelper->SetSettingInt(HUE_GROUP_EEPROM_KEY, iGroupID);
+  }
+}
+// Returns 1 if group <iGroupID> exists and is our own entertainment group, 0 if not, -1 on request failure
+int HueHelper::HueCheckGroup(int iGroupID, const char* pszName, const char* pszLegacyName, bool* pbLegacy) {
+  char szHueQueryUrl[MAX_HUE_URLSIZE]; 
+  snprintf_P(szHueQueryUrl, MAX_HUE_URLSIZE, PSTR("http://%s/api/%s/groups/%d"), GetBridgeIP(), GetBridgeUser(), iGroupID);
+  String payload = this->HueWebCommand(&szHueQueryUrl[0], NULL, 0, HTTP_GET); 
+  if (payload.length() == 0) 
+    return -1;
+  cJSON *json = cJSON_Parse(payload.c_str());
+  if (json == NULL) {
+    global::errprintf_P(PSTR("HueHelper: HueCheckGroup: Could not parse group %d (%u bytes)\n"), iGroupID, (unsigned) payload.length());
+    return -1;
+  }
+  int iResult = (hueIsOwnEntertainmentGroup(json, pszName, pszLegacyName, pbLegacy) ? 1 : 0);
+  cJSON_Delete(json);
+  return iResult;
+}
+// Searches all groups for our own entertainment group(s). Deletes further duplicates of this controller.
+// Returns the group ID, HUE_NOT_INITIALIZED if none exists, HUE_GROUP_LOOKUP_FAILED if the list could not be read.
+int HueHelper::HueFindOwnGroup(const char* pszName, const char* pszLegacyName, bool* pbLegacy) {
+  char szHueQueryUrl[MAX_HUE_URLSIZE]; 
+  int iOwnGroups[MAX_HUE_OWN_GROUPS];
+  bool bOwnLegacy[MAX_HUE_OWN_GROUPS];
+  int iOwnCount = 0;
+  int iKeep = -1;
+
+  snprintf_P(szHueQueryUrl, MAX_HUE_URLSIZE, PSTR("http://%s/api/%s/groups"), GetBridgeIP(), GetBridgeUser());
+  { // Block so payload and JSON tree are freed before the DELETE requests
+    String payload = this->HueWebCommand(&szHueQueryUrl[0], NULL, 0, HTTP_GET); 
+    if (payload.length() == 0) {
+      global::errprintf_P(PSTR("HueHelper: HueFindOwnGroup: Failed to read Entertainment Groups\n"));
+      return HUE_GROUP_LOOKUP_FAILED;
+    }
+    cJSON *json = cJSON_Parse(payload.c_str());
+    if (json == NULL) {
+      // Never fall through to creating a group here, that is what filled up bridges with duplicates
+      global::errprintf_P(PSTR("HueHelper: HueFindOwnGroup: Could not parse group list (%u bytes, free heap %u), not creating a new group\n"), 
+        (unsigned) payload.length(), (unsigned) ESP.getFreeHeap());
+      return HUE_GROUP_LOOKUP_FAILED;
+    }
+    const char* pszErrDesc = NULL;
+    if (!cJSON_IsObject(json) || hueGetErrorType(json, &pszErrDesc) != 0) {
+      global::errprintf_P(PSTR("HueHelper: HueFindOwnGroup: Bridge returned an error for the group list: %s\n"), (pszErrDesc != NULL ? pszErrDesc : ""));
+      cJSON_Delete(json);
+      return HUE_GROUP_LOOKUP_FAILED;
+    }
+    const cJSON *json_group = NULL;
+    cJSON_ArrayForEach(json_group, json) {
+      if (json_group->string == NULL) 
+        continue;
+      bool bLegacy = false;
+      if (hueIsOwnEntertainmentGroup(json_group, pszName, pszLegacyName, &bLegacy)) {
+        _DBGPRINTF(PSTR("HueHelper: HueFindOwnGroup: Own Entertainment group id '%s'%s found\n"), json_group->string, (bLegacy ? " (old name)" : ""));
+        if (iOwnCount < MAX_HUE_OWN_GROUPS) {
+          iOwnGroups[iOwnCount] = atoi(json_group->string);
+          bOwnLegacy[iOwnCount] = bLegacy;
+          // Prefer a group with the current name, else the first (lowest ID) one
+          if (iKeep < 0 || (bOwnLegacy[iKeep] && !bLegacy)) 
+            iKeep = iOwnCount;
+          iOwnCount++;
+        }
+      }
+    }
+    cJSON_Delete(json);
+  }
+
+  if (iKeep < 0) {
+    _DBGPRINTF(PSTR("HueHelper: HueFindOwnGroup: No own Entertainment group found\n"));
+    return HUE_NOT_INITIALIZED;
+  }
+
+  // Remove duplicates of THIS controller only (same device ID), never other groups
+  for (int i = 0; i < iOwnCount; i++) {
+    if (i == iKeep) 
+      continue;
+    snprintf_P(szHueQueryUrl, MAX_HUE_URLSIZE, PSTR("http://%s/api/%s/groups/%d"), GetBridgeIP(), GetBridgeUser(), iOwnGroups[i]);
+    String payload = this->HueWebCommand(&szHueQueryUrl[0], NULL, 0, HTTP_DELETE); 
+    if (payload.length() > 0 && strstr(payload.c_str(), "\"success\"") != NULL) {
+      global::errprintf_P(PSTR("HueHelper: HueFindOwnGroup: Deleted duplicate Entertainment group %d\n"), iOwnGroups[i]);
+    } else {
+      global::errprintf_P(PSTR("HueHelper: HueFindOwnGroup: Failed to delete duplicate Entertainment group %d\n"), iOwnGroups[i]);
+    }
+  }
+
+  if (pbLegacy != NULL) *pbLegacy = bOwnLegacy[iKeep];
+  return iOwnGroups[iKeep];
+}
+// ---
+
 bool HueHelper::HueStartDtls() {
   char szHueQueryUrl[MAX_HUE_URLSIZE]; 
   char szHuePutData[MAX_HUE_PUTSIZE]; 
-  char szHueGroupName[MAX_HUE_MAXNAME]; 
+  char szHueGroupName[HUE_GROUP_NAME_MAX + 1]; 
+  char szHueLegacyGroupName[HUE_GROUP_NAME_MAX + 1]; 
   char szLights[MAX_HUE_MAXLIGHTIDS];
   char szIntToStr[MAX_INT_TO_STR];
   bool bGroupFound = false;
-  
-  // Init Hue GroupName 
-  snprintf_P(szHueGroupName, MAX_HUE_MAXNAME, PSTR("AmbiBack %s"), global::GetDeviceID() );
+  bool bGroupLegacyName = false;
 
-  // --- Check existing GROUPS first
-  // Get Groups URL
-  snprintf_P(szHueQueryUrl, MAX_HUE_URLSIZE, PSTR("http://%s/api/%s/groups"),
-                              GetBridgeIP(), 
-                              GetBridgeUser() );
-  { // Use Block due duplicated local vars                              
-    String payload = this->HueWebCommand(&szHueQueryUrl[0], NULL, 0, HTTP_GET ); 
-    if (payload.length() > 0) {
-      _DBGPRINTF(PSTR("HueHelper: HueStartDtls: SUCCESSFULLY obtained Entertainment groups\n"));
+  // The bridge refused to create our group recently (e.g. group table full): do not hammer it
+  if (m_tHueGroupRetryAfter != 0) {
+    if ((long)(millis() - m_tHueGroupRetryAfter) < 0) 
+      return false;
+    m_tHueGroupRetryAfter = 0;
+  }
   
-      // Check if our entertain group exists
-      // Parse JSON
-      cJSON *json = cJSON_Parse(payload.c_str());
-      if (json != NULL) {
-        // Loop through devices
-        const cJSON *json_group = NULL;
-        cJSON_ArrayForEach(json_group, json) {
-          cJSON *json_name = cJSON_GetObjectItemCaseSensitive(json_group, "name");
-          _DBGPRINTF(PSTR("HueHelper: HueStartDtls: Group '%s' id '%s' found\n"), 
-            (json_name != NULL && json_name->valuestring != NULL ? json_name->valuestring : "NULL"), (json_group != NULL && json_group->string != NULL ? json_group->string : "NULL" ));
-  
-          if ( strcmp(szHueGroupName, json_name->valuestring) == 0) {
-            bGroupFound = true; 
-            // Get and convert Entertainment GroupID to INT
-            m_iHueEntertainmentGroupID = atoi(json_group->string);
-            break;
-          }
-        }
-        // Free JSON
-        cJSON_Delete(json);
-      }
-    } else {
-      global::errprintf_P(PSTR("HueHelper: HueStartDtls: Failed to read Entertainment Groups\n") );
-  
-      // FAILED!
+  // Init Hue GroupName (current and legacy naming scheme)
+  snprintf_P(szHueGroupName, sizeof(szHueGroupName), PSTR("AmbiBack %s"), global::GetDeviceID() );
+  snprintf_P(szHueLegacyGroupName, sizeof(szHueLegacyGroupName), PSTR("AmbiBack Group %s"), global::GetDeviceID() );
+  m_iHueEntertainmentGroupID = HUE_NOT_INITIALIZED;
+
+  // --- 1. Check the remembered group first (small response, no full group list needed)
+  int iStoredGroupID = global::m_pEepromHelper->GetSettingInt(HUE_GROUP_EEPROM_KEY, HUE_NOT_INITIALIZED, false);
+  if (iStoredGroupID > 0) {
+    int iCheck = this->HueCheckGroup(iStoredGroupID, szHueGroupName, szHueLegacyGroupName, &bGroupLegacyName);
+    if (iCheck < 0) {
+      global::errprintf_P(PSTR("HueHelper: HueStartDtls: Failed to verify stored Entertainment group %d\n"), iStoredGroupID);
       return false; 
+    } else if (iCheck == 1) {
+      _DBGPRINTF(PSTR("HueHelper: HueStartDtls: Reusing stored Entertainment group %d\n"), iStoredGroupID);
+      bGroupFound = true; 
+      m_iHueEntertainmentGroupID = iStoredGroupID;
+    } else {
+      _DBGPRINTF(PSTR("HueHelper: HueStartDtls: Stored Entertainment group %d is gone or not ours, searching\n"), iStoredGroupID);
+      this->HueSaveGroupID(HUE_NOT_INITIALIZED);
+    }
+  }
+
+  // --- 2. Search all groups by name (also removes duplicates of this controller)
+  if (!bGroupFound) {
+    int iFoundGroupID = this->HueFindOwnGroup(szHueGroupName, szHueLegacyGroupName, &bGroupLegacyName);
+    if (iFoundGroupID == HUE_GROUP_LOOKUP_FAILED) {
+      // FAILED! Retry later, but never create a group without a valid lookup
+      return false; 
+    } else if (iFoundGroupID != HUE_NOT_INITIALIZED) {
+      bGroupFound = true; 
+      m_iHueEntertainmentGroupID = iFoundGroupID;
     }
   }
   // --- 
@@ -779,13 +918,24 @@ bool HueHelper::HueStartDtls() {
                                 GetBridgeIP(), 
                                 GetBridgeUser(), 
                                 m_iHueEntertainmentGroupID);
-    // Create PUT Data
-    stPostLen = snprintf_P(szHuePutData, MAX_HUE_PUTSIZE, 
-      PSTR( "{\n"
-            "\"lights\": [\n"
-              "%s\n"
-            "]\n"
-            "}\n"), szLights); 
+    // Create PUT Data (rename groups that still carry the old name)
+    if (bGroupLegacyName) {
+      _DBGPRINTF(PSTR("HueHelper: HueStartDtls: Renaming Entertainment group %d to '%s'\n"), m_iHueEntertainmentGroupID, szHueGroupName);
+      stPostLen = snprintf_P(szHuePutData, MAX_HUE_PUTSIZE, 
+        PSTR( "{\n"
+              "\"name\": \"%s\",\n"
+              "\"lights\": [\n"
+                "%s\n"
+              "]\n"
+              "}\n"), szHueGroupName, szLights); 
+    } else {
+      stPostLen = snprintf_P(szHuePutData, MAX_HUE_PUTSIZE, 
+        PSTR( "{\n"
+              "\"lights\": [\n"
+                "%s\n"
+              "]\n"
+              "}\n"), szLights); 
+    }
     iHttpMethod = HTTP_PUT; 
   } else {
     // Create URL
@@ -808,46 +958,55 @@ bool HueHelper::HueStartDtls() {
 
   { // do BLOCK due duplicated local variables
     String payload = this->HueWebCommand(&szHueQueryUrl[0], &szHuePutData[0], stPostLen, iHttpMethod); 
-    if (payload.length() > 0) {
-      // GET HueGroupID!
-      // Parse JSON
-      cJSON *json = cJSON_Parse(payload.c_str());
-      if (json != NULL) {
-        // Loop through devices
-        cJSON *json_success = cJSON_GetObjectItemCaseSensitive(json->child, "success");
-        if (json_success != NULL) {
-          _DBGPRINTF(PSTR("HueHelper: HueStartDtls: Entertainment Group ADDED with Status: %s\n"), (json_success->string != NULL ? json_success->string : "NULL"));
-          
-          cJSON *json_id = cJSON_GetObjectItemCaseSensitive(json_success, "id");
-          if (json_id != NULL) {
-            _DBGPRINTF(PSTR("HueHelper: HueStartDtls: json_id FOUND %s/%s\n"),
-              (json_id->string != NULL ? json_id->string : "NULL"), (json_id->valuestring != NULL ? json_id->valuestring : "NULL"));
-            _DBGPRINTF(PSTR("HueHelper: HueStartDtls: Entertainment Group ADDED with ID '%s'\n"), 
-              json_id->valuestring );
-
-            // Set Entertainment GroupID
-            m_iHueEntertainmentGroupID = atoi(json_id->valuestring);   
-            // snprintf_P(m_szHueEntertainmentGroupID, MAX_HUE_MAXID, PSTR("%s"), json_id->valuestring );
-          }
-        } else {
-          global::errprintf_P(PSTR("HueHelper: HueStartDtls: Entertainment Group ADD FAILED with response: %s\n"), payload.c_str());
-
-          // Free JSON
-          cJSON_Delete(json);
-          
-          // FAILED!
-          return false; 
-        }
-  
-        // Free JSON
-        cJSON_Delete(json);
-      }    
-    } else {
+    if (payload.length() == 0) {
       global::errprintf_P(PSTR("HueHelper: HueStartDtls: Failed to turn Create/Set Hue Entertainment Group '%s' \n"), szHueGroupName);
-  
       // FAILED!
       return false; 
     }
+    cJSON *json = cJSON_Parse(payload.c_str());
+    cJSON *json_success = (json != NULL ? cJSON_GetObjectItemCaseSensitive(json->child, "success") : NULL);
+    if (json_success != NULL) {
+      if (iHttpMethod == HTTP_POST) {
+        cJSON *json_id = cJSON_GetObjectItemCaseSensitive(json_success, "id");
+        if (cJSON_IsString(json_id) && json_id->valuestring != NULL) {
+          _DBGPRINTF(PSTR("HueHelper: HueStartDtls: Entertainment Group '%s' ADDED with ID '%s'\n"), szHueGroupName, json_id->valuestring);
+          // Set Entertainment GroupID
+          m_iHueEntertainmentGroupID = atoi(json_id->valuestring);   
+        }
+      } else {
+        _DBGPRINTF(PSTR("HueHelper: HueStartDtls: Entertainment Group %d UPDATED\n"), m_iHueEntertainmentGroupID);
+      }
+    } else {
+      const char* pszErrDesc = "";
+      int iErrType = (json != NULL ? hueGetErrorType(json, &pszErrDesc) : 0);
+      if (iHttpMethod == HTTP_POST && 
+          (iErrType == 301 || iErrType == 11 || strstr(pszErrDesc, "full") != NULL || strstr(pszErrDesc, "resources") != NULL)) {
+        // Bridge supports at most 20 entertainment areas
+        m_pszHueLastError = "Hue bridge has no free entertainment area (max. 20). Delete unused areas in the Hue app.";
+        m_tHueGroupRetryAfter = millis() + HUE_GROUP_RETRY_FULL_MS;
+        if (m_tHueGroupRetryAfter == 0) m_tHueGroupRetryAfter = 1;
+        global::errprintf_P(PSTR("HueHelper: HueStartDtls: Cannot create Entertainment group '%s': Hue bridge has no free entertainment area (max. 20, error %d: %s). Delete unused areas in the Hue app. Retry in %d s\n"), 
+          szHueGroupName, iErrType, pszErrDesc, HUE_GROUP_RETRY_FULL_MS / 1000);
+      } else {
+        m_pszHueLastError = "Failed to create or update the Hue entertainment area.";
+        global::errprintf_P(PSTR("HueHelper: HueStartDtls: Entertainment Group %s FAILED (error %d: %s)\n"), 
+          (iHttpMethod == HTTP_POST ? "ADD" : "UPDATE"), iErrType, pszErrDesc);
+        if (iHttpMethod == HTTP_PUT) {
+          // Group may have been removed meanwhile: search again on the next try
+          this->HueSaveGroupID(HUE_NOT_INITIALIZED);
+        }
+      }
+      m_iHueEntertainmentGroupID = HUE_NOT_INITIALIZED;
+    }
+    if (json != NULL) 
+      cJSON_Delete(json);
+
+    if (m_iHueEntertainmentGroupID == HUE_NOT_INITIALIZED) {
+      // FAILED! (an unparsable POST answer is fine too: the next try finds the group by name)
+      return false; 
+    }
+    // Remember the group so it is reused on the next start
+    this->HueSaveGroupID(m_iHueEntertainmentGroupID);
   }
   // ---
 
@@ -923,6 +1082,7 @@ bool HueHelper::HueStartDtls() {
   this->HueInitHueLightStatesDtls(); 
 
   // Successfully enabled DTLS Streaming!
+  m_pszHueLastError = NULL;
   return true; 
 }
 void HueHelper::HueStopDtls() {
